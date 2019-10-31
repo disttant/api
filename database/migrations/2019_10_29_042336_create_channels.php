@@ -20,11 +20,11 @@ class CreateChannels extends Migration
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->uuid('sandbox');
+            $table->integer('user_id');
             $table->string('channel', 30);
 
             //$table->unique(['sandbox', 'channel']);
-            $table->index(['sandbox', 'channel']);
+            $table->index(['user_id', 'channel']);
 
         });
     }

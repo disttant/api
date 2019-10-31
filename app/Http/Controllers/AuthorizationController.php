@@ -36,6 +36,34 @@ class AuthorizationController extends Controller
                 'message'   => 'Authorization header not found'
             ], 400 )->send();
         }
+
+        if( $request->hasHeader('content-type') === false ){
+            response()->json([
+                'status'    => 'error',
+                'message'   => 'Content-Type header not found'
+            ], 400 )->send();
+        }
+
+        if( $request->hasHeader('accept') === false ){
+            response()->json([
+                'status'    => 'error',
+                'message'   => 'Accept header not found'
+            ], 400 )->send();
+        }
+
+        if( $request->isJson() === false ){
+            response()->json([
+                'status'    => 'error',
+                'message'   => 'Wrong Content-Type header: This API only can understand JSON'
+            ], 400 )->send();
+        }
+
+        if( $request->wantsJson() === false ){
+            response()->json([
+                'status'    => 'error',
+                'message'   => 'Wrong Accept header: This API can just response JSON'
+            ], 400 )->send();
+        }
         
         if( is_null($request->bearerToken()) ){
             response()->json([

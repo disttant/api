@@ -26,39 +26,112 @@ use App\Http\Controllers\JwtController;
 
 Route::get('/test', function(){
 
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    return $sub;
+
 });
 
 
-
-
+###
 Route::get('/channels/list/{perpage}/{page?}', function($perpage, $page = 1){
     
-    # FIND THE SANDBOX INTO TOKEN
-    $sandbox = App::call('App\Http\Controllers\JwtController@getSandbox');
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
 
-    return App\Channel::List($sandbox, $page, $perpage ) ;
+    return App\Channel::List($sub, $page, $perpage );
 
 })->where(['perpage' => '[0-9]+', 'page' => '[0-9]+']);
 
 
-
+###
 Route::get('/channels/list/free/{perpage}/{page?}', function($perpage, $page = 1){
     
-    # FIND THE SANDBOX INTO TOKEN
-    $sandbox = App::call('App\Http\Controllers\JwtController@getSandbox');
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
 
-    return App\Channel::Free($sandbox, $page, $perpage ) ;
+    return App\Channel::Free($sub, $page, $perpage ) ;
 
 })->where(['perpage' => '[0-9]+', 'page' => '[0-9]+']);
 
 
-
+###
 Route::post('/channels/{channel}', function( $channel ){
     
-    # FIND THE SANDBOX INTO TOKEN
-    $sandbox = App::call('App\Http\Controllers\JwtController@getSandbox');
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
 
-    return App\Channel::Create($sandbox, $channel);
+    $created = App\Channel::Create($sub, $channel);
+
+    if ( $created === false )
+        response()->json([
+            'status'    => 'error',
+            'message'   => 'Malformed field'
+        ], 400 )->send();
+
+    if ( is_null( $created ) )
+        response()->json([
+            'status'    => 'error',
+            'message'   => 'Resource already exists'
+        ], 409 )->send();
+
+    response( '', 204 )->send();
+
+})->where(['channel' => '[a-z]+']);
+
+
+###
+Route::delete('/channels/{channel}', function( $channel ){
+    
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    $deleted = App\Channel::Remove($sub, $channel);
+
+    if ( $deleted === false )
+        response()->json([
+            'status'    => 'error',
+            'message'   => 'Malformed field'
+        ], 400 )->send();
+
+    response( '', 204 )->send();
+
+})->where(['channel' => '[a-z]+']);
+
+
+###
+Route::get('/channels/messages/{channel}/{number?}', function($channel, $number = 3){
+    
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    return App\Channel::GetMessages( $sub, $channel, $number );
+
+})->where(['channel' => '[a-z]+', 'number' => '[0-9]+']);
+
+
+###
+Route::post('/channels/message/{channel}', function( Request $request, $channel ){
+    
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    # Check if there is a message into the JSON
+    if ( !$request->filled('message') ) {
+        response()->json([
+            'status'    => 'error',
+            'message'   => 'Bad request: message is missing'
+        ], 400 )->send();
+    }
+
+    $newMessage =  App\Channel::SetMessage( $sub, $channel, $request->input('message') );
+
+    if ( $newMessage === false )
+        response()->json([
+            'status'    => 'error',
+            'message'   => 'Bad request: malformed field'
+        ], 400 )->send();
+
+    response( '', 204 )->send();
 
 })->where(['channel' => '[a-z]+']);
 
@@ -68,25 +141,3 @@ Route::post('/channels/{channel}', function( $channel ){
 
 
 
-
-
-
-
-Route::get('/dame', function(){
-    
-    return App\Channel::Messages('507e1af4-fa5a-11e9-8f0b-362b9e155587', 'caca', 2) ;
-
-});
-
-
-Route::get('/new/message', function(){
-    
-    $channel = new App\Message;
-
-    $channel->sandbox = '507e1af4-fa5a-11e9-8f0b-362b9e155587';
-    $channel->channel_id = 1;
-    $channel->message = 'hola soy un mensaje de prueba 2 en caca';
-
-    $channel->save();
-
-});

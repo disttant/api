@@ -20,10 +20,10 @@ class CreateGroups extends Migration
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->uuid('sandbox');
+            $table->integer('user_id');
             $table->string('group', 30);
 
-            $table->index(['sandbox', 'group']);
+            $table->index(['user_id', 'group']);
 
         });
     }

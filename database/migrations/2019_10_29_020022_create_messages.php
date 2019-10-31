@@ -20,12 +20,12 @@ class CreateMessages extends Migration
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->uuid('sandbox');
+            $table->integer('user_id');
             $table->integer('channel_id');
             $table->string('message', 200);
             $table->dateTime('created_at')->useCurrent();
 
-            $table->index(['sandbox', 'channel_id']);
+            $table->index(['user_id', 'channel_id']);
 
             /*$table->foreign('channel_id')
                 ->references('id')->on('channels')

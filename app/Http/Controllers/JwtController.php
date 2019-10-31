@@ -33,20 +33,33 @@ class JwtController extends Controller
 
     /* *
      *
-     * Returns a string with the sandbox
+     * Returns a string with the given param
      * 
      * */
-    public function getSandbox( Request $request )
+    public function getParam( Request $request, string $param = 'sub' )
     {
         # Instance the JWT Parser
         $jwt = new JwtController;
         $payload = $jwt->getPayload( $request );
 
-        # Returns the sandbox field
-        if ( !array_key_exists('sandbox', $payload) )
+        # Returns the field
+        if ( !array_key_exists($param, $payload) )
             return [];
 
-        return $payload['sandbox'];
+        return $payload[$param];
+    }
+
+    /* *
+     *
+     * Returns a string with the sandbox
+     * 
+     * */
+    public function getSub( Request $request )
+    {
+        # Instance the JWT Parser
+        $jwt = new JwtController;
+
+        return $jwt->getParam( $request, 'sub' );
     }
 
     /* *
@@ -58,12 +71,7 @@ class JwtController extends Controller
     {
         # Instance the JWT Parser
         $jwt = new JwtController;
-        $payload = $jwt->getPayload( $request );
 
-        # Returns the sandbox field
-        if ( !array_key_exists('jti', $payload) )
-            return [];
-
-        return $payload['jti'];
+        return $jwt->getParam( $request, 'jti' );
     }
 }

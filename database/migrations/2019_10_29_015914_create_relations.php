@@ -19,7 +19,7 @@ class CreateRelations extends Migration
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
 
-            $table->uuid('sandbox');
+            $table->integer('user_id');
             $table->integer('channel_id');
             $table->integer('group_id');
 
