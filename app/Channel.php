@@ -11,7 +11,6 @@ class Channel extends Model
 
     public    $timestamps = false;
 
-
     protected $fillable = [
         'user_id',
         'channel'
@@ -20,27 +19,28 @@ class Channel extends Model
 
 
     /* *
-     *  Creates a new channel into the given home
+     *
+     *  List all available channels of the given user
      *
      * */
-    public static function List(string $user_id = null, int $page = 1, int $perPage = 10)
+    public static function List(string $user_id = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
 
         return Channel::select('channel')
             ->where('user_id', $user_id)
-            ->forPage($page, $perPage)
             ->get();
     }
 
 
 
     /* *
-     *  Creates a new channel into the given home
+     *
+     *  List all not related channels of the given user
      *
      * */
-    public static function Free(string $user_id = null, int $page = 1, int $perPage = 10)
+    public static function Free(string $user_id = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
@@ -52,14 +52,14 @@ class Channel extends Model
                     ->whereColumn('channel_id', 'channels.id')
                     ->where('user_id', $user_id)
             )
-            ->forPage($page, $perPage)
             ->get();
     }
 
 
 
     /* *
-     *  Creates a new channel into the given home
+     *
+     *  Creates a new channel for the given user
      *
      * */
     public static function Create(string $user_id = null, string $name = null)
@@ -88,7 +88,8 @@ class Channel extends Model
 
 
     /* *
-     *  Deletes a channel from the given home
+     *
+     *  Deletes a channel from the given user
      *
      * */
     public static function Remove(string $user_id = null, string $name = null)
@@ -109,10 +110,11 @@ class Channel extends Model
 
 
     /* *
-     * Retrieves N messages for a given home-channel pair
+     *
+     * Retrieves N messages for a given user-channel pair
      *
      * */
-    public static function GetMessages(string $user_id = null, string $channel = null, $limit = 10)
+    public static function GetMessages(string $user_id = null, string $channel = null, $limit = 1)
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
@@ -138,7 +140,8 @@ class Channel extends Model
 
 
     /* *
-     *  Creates a new channel into the given home
+     *
+     *  Creates a new message for the given user-channel pair
      *
      * */
     public static function SetMessage(string $user_id = null, string $channel = null, string $message = null)
@@ -155,10 +158,12 @@ class Channel extends Model
         # Get the channel_id of a channel name
         $channel_id = Channel::where('channel', $channel)
             ->where('user_id', $user_id)
-            ->first()
-            ->id;
+            ->first();
 
-        # Check if there is a channel id <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        if ( is_null( $channel_id ) )
+            return false;
+        
+        $channel_id = $channel_id->id;
         
         # Create a new message
         $newMessage = new Message;
@@ -171,10 +176,95 @@ class Channel extends Model
             return false;
 
         return true;
-
     }
 
 
 
-    
+    /* *
+     *
+     *  Creates a new channel relation into the given group
+     *
+     * */
+    public static function SetLink(string $user_id = null, string $channel_name = null, string $group_name = null)
+    {
+
+        if ( is_null($user_id) || empty($user_id) )
+            return false;
+
+        if ( is_null($channel_name) || empty($channel_name) )
+            return false;
+
+        if ( is_null($group_name) || empty($group_name) )
+            return false;
+
+        # Check if group and channel exists
+        $group = Group::where('user_id', $user_id)
+            ->where('group', $group_name)
+            ->first();
+
+        $channel = Channel::where('user_id', $user_id)
+            ->where('channel', $channel_name)
+            ->first();
+        
+        if ( is_null( $group ) || is_null( $channel ) )
+            return false;
+
+        $group_id = $group->id;
+        $channel_id = $channel->id;
+
+        # Create a new relation model
+        $relation = Relation::firstOrNew([
+            'user_id'    => $user_id,
+            'channel_id' => $channel_id,
+            'group_id'   => $group_id
+        ]);
+
+        if ( $relation->exists === true )
+            return null;
+
+        if ( $relation->save() === false )
+            return false;
+
+        return true;
+    }
+
+
+
+    /* *
+     *
+     *  Removes a channel relation
+     *
+     * */
+    public static function RemoveLink( string $user_id = null, string $channel_name = null )
+    {
+
+        if ( is_null($user_id) || empty($user_id) )
+            return false;
+
+        if ( is_null($channel_name) || empty($channel_name) )
+            return false;
+
+        # Check if channel exists
+        $channel = Channel::where('user_id', $user_id)
+            ->where('channel', $channel_name)
+            ->first();
+        
+        if ( is_null( $channel ) )
+            return false;
+
+        $channel_id = $channel->id;
+
+        # Try to remove any relation for that channel
+        $deleteRelation = Relation::where('user_id', $user_id)
+            ->where('channel_id', $channel_id)
+            ->delete();
+
+        if ( $deleteRelation == false )
+            return null;
+
+        return true;
+    }
+
+
+
 }

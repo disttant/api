@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class AuthorizationController extends Controller
 {
 
-    public $_guzzle;
+    public    $_guzzle;
 
     /**
      * Create a new controller instance.
@@ -17,7 +17,7 @@ class AuthorizationController extends Controller
     public function __construct()
     {
         $this->_guzzle = new \GuzzleHttp\Client([
-            'base_uri' => 'http://192.168.0.4:8000',
+            'base_uri'    => config('internals.oauth_server_internal_uri'),
             'http_errors' => false
         ]);
     }
@@ -72,7 +72,7 @@ class AuthorizationController extends Controller
             ], 400 )->send();
         }
 
-        $response = $this->_guzzle->get('/internal/oauth/access_token/validate', [
+        $response = $this->_guzzle->get( config('internals.check_token_uri'), [
             'headers' => [ 
                 'Authorization' => 'Bearer ' . $request->bearerToken(),
                 'Accept'        => 'application/json'
