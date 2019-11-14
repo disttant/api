@@ -26,9 +26,22 @@ class Group extends Model
         if ( is_null($user_id) || empty($user_id) )
             return [];
 
-        return Group::select('group')
+        $groups =  Group::select('group')
             ->where('user_id', $user_id)
             ->get();
+
+        if( count($groups) === 0 ){
+            return [];
+        }
+
+        # Process the request a bit
+        $result = [];
+        foreach ($groups as $item => $data){
+            $result[] = $data->group;
+        }
+
+        return $result;
+
     }
 
 
@@ -38,7 +51,7 @@ class Group extends Model
      *  List groups with related channels inside
      *
      * */
-    public static function Related( string $user_id = null )
+    public static function RelatedList( string $user_id = null )
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
@@ -63,6 +76,39 @@ class Group extends Model
         }
 
         return $result;
+    }
+
+
+
+    /* *
+     *
+     *  List groups with/without related channels inside
+     *
+     * */
+    public static function FullList( string $user_id = null )
+    {
+        if ( is_null($user_id) || empty($user_id) )
+            return [];
+
+        # Get needed information for the request
+        $allGroups      = self::List($user_id);
+        $relatedGroups  = self::RelatedList($user_id);
+
+        if( count($allGroups) === 0 ){
+            return [];
+        }
+
+        # Process the request a bit
+        foreach( $allGroups as $item )
+        {
+            if( !array_key_exists($item, $relatedGroups) )
+            {
+                $relatedGroups[$item] = [];
+            }
+        }
+
+        return $relatedGroups;
+        
     }
 
 

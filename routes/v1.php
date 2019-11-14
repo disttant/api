@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-//use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\JwtController;
 
 
@@ -16,11 +15,6 @@ use App\Http\Controllers\JwtController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
-
-# Let's validate each token
-App::call('App\Http\Controllers\AuthorizationController@validationRequest'); 
 
 
 ###
@@ -66,7 +60,7 @@ Route::post('/channels/{channel}', function( $channel ){
 
     response( '', 204 )->send();
 
-})->where(['channel' => '[a-z]+']);
+})->where(['channel' => '[a-z0-9]+']);
 
 
 ###
@@ -85,7 +79,7 @@ Route::delete('/channels/{channel}', function( $channel ){
 
     response( '', 204 )->send();
 
-})->where(['channel' => '[a-z]+']);
+})->where(['channel' => '[a-z0-9]+']);
 
 
 ###
@@ -96,7 +90,7 @@ Route::get('/channels/messages/{channel}/{number?}', function($channel, $number 
 
     return App\Channel::GetMessages( $sub, $channel, $number );
 
-})->where(['channel' => '[a-z]+', 'number' => '[0-9]+']);
+})->where(['channel' => '[a-z0-9]+', 'number' => '[0-9]+']);
 
 
 ###
@@ -123,7 +117,7 @@ Route::post('/channels/message/{channel}', function( Request $request, $channel 
 
     response( '', 204 )->send();
 
-})->where(['channel' => '[a-z]+']);
+})->where(['channel' => '[a-z0-9]+']);
 
 
 ###
@@ -148,7 +142,7 @@ Route::post('/channels/link/{channel}/{group}', function( Request $request, $cha
 
     response( '', 204 )->send();
 
-})->where(['channel' => '[a-z]+', 'group' => '[a-z]+']);
+})->where(['channel' => '[a-z0-9]+', 'group' => '[a-z0-9]+']);
 
 
 ###
@@ -173,7 +167,7 @@ Route::delete('/channels/link/{channel}', function( Request $request, $channel )
 
     response( '', 204 )->send();
 
-})->where(['channel' => '[a-z]+']);
+})->where(['channel' => '[a-z0-9]+']);
 
 
 ###
@@ -188,12 +182,23 @@ Route::get('/groups/list', function(){
 
 
 ###
-Route::get('/groups/lists', function(){
+Route::get('/groups/list/related', function(){
 
     # FIND THE USER_ID INTO TOKEN
     $sub = App::call('App\Http\Controllers\JwtController@getSub');
 
-    return App\Group::Related($sub);
+    return App\Group::RelatedList($sub);
+
+});
+
+
+###
+Route::get('/groups/list/full', function(){
+
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    return App\Group::FullList($sub);
 
 });
 
@@ -206,7 +211,7 @@ Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
 
     return App\Group::GetMessages( $sub, $group, $number );
 
-})->where(['group' => '[a-z]+', 'number' => '[0-9]+']);
+})->where(['group' => '[a-z0-9]+', 'number' => '[0-9]+']);
 
 
 ###
@@ -230,7 +235,7 @@ Route::post('/groups/{group}', function( $group ){
 
     response( '', 204 )->send();
 
-})->where(['group' => '[a-z]+']);
+})->where(['group' => '[a-z0-9]+']);
 
 
 ###
@@ -249,4 +254,5 @@ Route::delete('/groups/{group}', function( $group ){
 
     response( '', 204 )->send();
 
-})->where(['group' => '[a-z]+']);
+})->where(['group' => '[a-z0-9]+']);
+

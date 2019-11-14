@@ -11,7 +11,21 @@
 |
 */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});
-*/
+
+
+//
+Route::any('/{any}', function () {
+    return 'Welcome!';
+})->where('any', '.*');;
+
+
+
+//
+/*Route::fallback(function() {
+    return response()->json(['message' => 'Not Found.'], 404);
+});*/
+
+
+/*Route::any('/', function () {
+    return 'hola bebe';
+});*/

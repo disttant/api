@@ -37,10 +37,17 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
+        'customfallback' => [
+            'throttle:10,1',
+            'bindings',
+        ],
+
         'api' => [
             'throttle:60,1',
             'bindings',
+            'prechecker'
         ],
+
     ];
 
     /**
@@ -61,6 +68,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'prechecker' => \App\Http\Middleware\RequestPrechecker::class,
     ];
 
     /**

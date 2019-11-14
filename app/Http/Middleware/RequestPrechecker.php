@@ -1,34 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
+use Closure;
 
-class AuthorizationController extends Controller
+class RequestPrechecker
 {
 
-    public    $_guzzle;
-
     /**
-     * Create a new controller instance.
+     * Handle an incoming request.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
      */
-    public function __construct()
+    public function handle($request, Closure $next)
     {
-        $this->_guzzle = new \GuzzleHttp\Client([
+        $_guzzle = new \GuzzleHttp\Client([
             'base_uri'    => config('internals.oauth_server_internal_uri'),
             'http_errors' => false
         ]);
-    }
-
-    /**
-     * Show the profile of the user.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function validationRequest(Request $request)
-    {
 
         if( $request->hasHeader('authorization') === false ){
             response()->json([
@@ -72,7 +63,7 @@ class AuthorizationController extends Controller
             ], 400 )->send();
         }
 
-        $response = $this->_guzzle->get( config('internals.check_token_uri'), [
+        $response = $_guzzle->get( config('internals.check_token_uri'), [
             'headers' => [ 
                 'Authorization' => 'Bearer ' . $request->bearerToken(),
                 'Accept'        => 'application/json'
@@ -90,5 +81,8 @@ class AuthorizationController extends Controller
         //echo $response->getHeaderLine('content-type'); # 'application/json; charset=utf8'
         //echo $response->getBody(); # '{"id": 1420053, "name": "guzzle", ...}'
 
+
+        return $next($request);
     }
+
 }

@@ -35,28 +35,22 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        
+
         $this->mapV1Routes();
 
         $this->mapV2Routes();
+
+        $this->mapCustomFallbackRoutes();
 
         //$this->mapWebRoutes();
 
         //
     }
 
-    /**
-     * Define the "web" routes for the application.
-     *
-     * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
-     */
-    protected function mapWebRoutes()
-    {
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
-    }
+    
+
+    
 
     /**
      * Define the "v1" routes for the application.
@@ -68,9 +62,9 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapV1Routes()
     {
         Route::prefix('v1')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/v1.php'));
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/v1.php'));
     }
     
     /**
@@ -83,10 +77,37 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapV2Routes()
     {
         Route::prefix('v2')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/v2.php'));
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/v2.php'));
     }
 
+    /**
+     * Define the "custom fallback" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapCustomFallbackRoutes()
+    {
+        Route::middleware('customfallback')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/customfallback.php'));
+    }
+
+    /**
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
+    }
     
 }

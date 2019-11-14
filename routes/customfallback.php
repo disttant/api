@@ -1,13 +1,12 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\JwtController;
 
 
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Root Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
@@ -16,10 +15,12 @@ use App\Http\Controllers\JwtController;
 |
 */
 
-
-###
-Route::get('/test', function(){
+Route::any('/{any}', function () {
     
-    return;
+    response()->json([
+        'status'    => 'error',
+        'message'   => 'Bad request: route not found'
+    ], 404 )->send();
 
-});
+})->where('any', '.*');
+
