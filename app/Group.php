@@ -37,7 +37,7 @@ class Group extends Model
         # Process the request a bit
         $result = [];
         foreach ($groups as $item => $data){
-            $result[] = $data->group;
+            $result['groups'][] = $data->group;
         }
 
         return $result;
@@ -54,7 +54,7 @@ class Group extends Model
     public static function RelatedList( string $user_id = null )
     {
         if ( is_null($user_id) || empty($user_id) )
-            return [];
+            return [ 'groups' => [] ];
 
         # Get all related channel with the group
         $relation = Relation::select('groups.group', 'channels.channel')
@@ -66,13 +66,24 @@ class Group extends Model
             ->get();
 
         if( count($relation) === 0 ){
-            return [];
+            return [ 'groups' => [] ];
         }
 
         # Process the request a bit
-        $result = [];
+        $preResult = [];
+
+        ## Step 1: Re-group channels into right groups
         foreach ($relation as $item => $data){
-            $result[$data->group][] = $data->channel;
+            $preResult[$data->group][] = $data->channel;
+        }
+
+        ## Step 2: Change the structure a bit
+        $index = 0;
+        foreach ($preResult as $group => $channels){
+            $result['groups'][$index]['name'] = $group;
+            $result['groups'][$index]['channels'] = $channels;
+
+            $index++;
         }
 
         return $result;
@@ -88,23 +99,31 @@ class Group extends Model
     public static function FullList( string $user_id = null )
     {
         if ( is_null($user_id) || empty($user_id) )
-            return [];
+            return [ 'groups' => [] ];
 
         # Get needed information for the request
         $allGroups      = self::List($user_id);
         $relatedGroups  = self::RelatedList($user_id);
 
-        if( count($allGroups) === 0 ){
-            return [];
+        if( !array_key_exists('groups', $allGroups) || ( count($allGroups['groups']) === 0 ) ){
+            return [ 'groups' => [] ];
         }
 
         # Process the request a bit
-        foreach( $allGroups as $item )
+        ## Step 1: Deleting the related groups of entire list
+        foreach( $relatedGroups['groups'] as $item => $values )
         {
-            if( !array_key_exists($item, $relatedGroups) )
-            {
-                $relatedGroups[$item] = [];
-            }
+            $key = array_search($values['name'], $allGroups['groups']);
+            unset( $allGroups['groups'][$key] );
+        }
+
+        ## Step 2: Adding empty groups to the list
+        $index = count($relatedGroups['groups']);
+        foreach( $allGroups['groups'] as $item )
+        {
+            $relatedGroups['groups'][$index]['name'] = $item;
+            $relatedGroups['groups'][$index]['channels'] = [];
+            $index++;
         }
 
         return $relatedGroups;
