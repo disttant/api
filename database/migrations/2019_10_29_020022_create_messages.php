@@ -13,6 +13,8 @@ class CreateMessages extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('messages', function (Blueprint $table) {
 
             $table->engine = 'InnoDB';
@@ -21,18 +23,19 @@ class CreateMessages extends Migration
 
             $table->bigIncrements('id')->autoIncrement();
             $table->integer('user_id');
-            $table->integer('channel_id');
+            $table->unsignedBigInteger('device_id');
             $table->string('message', 200);
             $table->dateTime('created_at')->useCurrent();
 
-            $table->index(['user_id', 'channel_id']);
+            $table->index(['user_id', 'device_id']);
 
-            /*$table->foreign('channel_id')
-                ->references('id')->on('channels')
+            $table->foreign('device_id')->references('id')->on('devices')
                 ->onDelete('cascade')
-                ->onUpdate('cascade');*/
+                ->onUpdate('cascade');
 
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

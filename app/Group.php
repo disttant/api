@@ -48,7 +48,7 @@ class Group extends Model
 
     /* *
      *
-     *  List groups with related channels inside
+     *  List groups with related devices inside
      *
      * */
     public static function RelatedList( string $user_id = null )
@@ -56,12 +56,12 @@ class Group extends Model
         if ( is_null($user_id) || empty($user_id) )
             return [ 'groups' => [] ];
 
-        # Get all related channel with the group
-        $relation = Relation::select('groups.group', 'channels.channel')
+        # Get all related device with the group
+        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description', 'relations.map_x', 'relations.map_y')
             ->join('groups', 'relations.group_id', '=', 'groups.id')
                 ->where('groups.user_id', $user_id)
-            ->join('channels', 'relations.channel_id', '=', 'channels.id')
-                ->where('channels.user_id', $user_id)
+            ->join('devices', 'relations.device_id', '=', 'devices.id')
+                ->where('devices.user_id', $user_id)
             ->where('relations.user_id', $user_id)
             ->get();
 
@@ -72,16 +72,21 @@ class Group extends Model
         # Process the request a bit
         $preResult = [];
 
-        ## Step 1: Re-group channels into right groups
+        ## Step 1: Re-group devices into right groups
         foreach ($relation as $item => $data){
-            $preResult[$data->group][] = $data->channel;
+            $preResult[$data->group][] = [ 
+                'name' => $data->name,
+                'type' => $data->type,
+                'description' => $data->description,
+                'map' => [$data->map_x, $data->map_y]
+            ];
         }
 
         ## Step 2: Change the structure a bit
         $index = 0;
-        foreach ($preResult as $group => $channels){
+        foreach ($preResult as $group => $devices){
             $result['groups'][$index]['name'] = $group;
-            $result['groups'][$index]['channels'] = $channels;
+            $result['groups'][$index]['devices'] = $devices;
 
             $index++;
         }
@@ -93,7 +98,7 @@ class Group extends Model
 
     /* *
      *
-     *  List groups with/without related channels inside
+     *  List groups with/without related devices inside
      *
      * */
     public static function FullList( string $user_id = null )
@@ -122,7 +127,7 @@ class Group extends Model
         foreach( $allGroups['groups'] as $item )
         {
             $relatedGroups['groups'][$index]['name'] = $item;
-            $relatedGroups['groups'][$index]['channels'] = [];
+            $relatedGroups['groups'][$index]['devices'] = [];
             $index++;
         }
 
@@ -204,7 +209,7 @@ class Group extends Model
         return Message::select('messages.message', 'messages.created_at')
             ->joinWhere('groups', 'groups.group', '=', $group )
             ->join('relations', 'relations.group_id', '=', 'groups.id')
-            ->whereColumn('messages.channel_id', 'relations.channel_id')
+            ->whereColumn('messages.device_id', 'relations.device_id')
 
             ->where('relations.user_id', $user_id)
             ->where('groups.user_id', $user_id)
