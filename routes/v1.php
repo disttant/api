@@ -21,7 +21,12 @@ use Illuminate\Support\Facades\Validator;
 
 
 
-###
+/*
+|
+| GET /devices/list
+| Get a list of devices in the system
+|
+*/
 Route::get('/devices/list', function(){
     
     # FIND THE USER_ID INTO TOKEN
@@ -33,7 +38,12 @@ Route::get('/devices/list', function(){
 
 
 
-###
+/*
+|
+| GET /devices/list/free
+| Get a list of available devices in the system
+|
+*/
 Route::get('/devices/list/free', function(){
     
     # FIND THE USER_ID INTO TOKEN
@@ -45,7 +55,12 @@ Route::get('/devices/list/free', function(){
 
 
 
-###
+/*
+|
+| POST /devices/{device}
+| Creates a new device in the system
+|
+*/
 Route::post('/devices/{device}', function( $device ){
     
     $sub = App::call('App\Http\Controllers\JwtController@getSub');
@@ -70,7 +85,12 @@ Route::post('/devices/{device}', function( $device ){
 
 
 
-###
+/*
+|
+| DELETE /devices/{device}
+| Deletes a device from the system
+|
+*/
 Route::delete('/devices/{device}', function( $device ){
     
     # FIND THE USER_ID INTO TOKEN
@@ -90,7 +110,12 @@ Route::delete('/devices/{device}', function( $device ){
 
 
 
-## Update a device and set new values for it
+/*
+|
+| PUT /devices/profile/{device}
+| Update a device and set new values for it
+|
+*/
 Route::put('/devices/profile/{device}', function( Request $request, $device){
     
     # FIND THE USER_ID INTO TOKEN
@@ -132,7 +157,13 @@ Route::put('/devices/profile/{device}', function( Request $request, $device){
 })->where(['device' => '[a-z0-9]+']);
 
 
-###
+
+/*
+|
+| GET /devices/messages/{device}/{number?}
+| Get N messages from given device
+|
+*/
 Route::get('/devices/messages/{device}/{number?}', function($device, $number = 3){
     
     # FIND THE USER_ID INTO TOKEN
@@ -143,7 +174,13 @@ Route::get('/devices/messages/{device}/{number?}', function($device, $number = 3
 })->where(['device' => '[a-z0-9]+', 'number' => '[0-9]+']);
 
 
-###
+
+/*
+|
+| POST /devices/message/{device}
+| Post a new message in the selected device conversation
+|
+*/
 Route::post('/devices/message/{device}', function( Request $request, $device ){
     
     # FIND THE USER_ID INTO TOKEN
@@ -170,7 +207,13 @@ Route::post('/devices/message/{device}', function( Request $request, $device ){
 })->where(['device' => '[a-z0-9]+']);
 
 
-###
+
+/*
+|
+| POST /devices/relation/{device}/{group}
+| Creates a new relation between selected device and selected group
+|
+*/
 Route::post('/devices/relation/{device}/{group}', function( Request $request, $device, $group ){
     
     # FIND THE USER_ID INTO TOKEN
@@ -195,7 +238,13 @@ Route::post('/devices/relation/{device}/{group}', function( Request $request, $d
 })->where(['device' => '[a-z0-9]+', 'group' => '[a-z0-9]+']);
 
 
-###
+
+/*
+|
+| DELETE /devices/relation/{device}
+| Destroy all relations between selected device and any group
+|
+*/
 Route::delete('/devices/relation/{device}', function( Request $request, $device ){
     
     # FIND THE USER_ID INTO TOKEN
@@ -221,8 +270,12 @@ Route::delete('/devices/relation/{device}', function( Request $request, $device 
 
 
 
-
-## Update a relation and set the coordinates for it
+/*
+|
+| PUT /devices/relation/coordinates/{device}
+| Update a relation and set the coordinates for it
+|
+*/
 Route::put('/devices/relation/coordinates/{device}', function( Request $request, $device){
     
     # FIND THE USER_ID INTO TOKEN
@@ -264,7 +317,12 @@ Route::put('/devices/relation/coordinates/{device}', function( Request $request,
 
 
 
-###
+/*
+|
+| GET /groups/list
+| Get a list with all the groups in the system
+|
+*/
 Route::get('/groups/list', function(){
     
     # FIND THE USER_ID INTO TOKEN
@@ -275,7 +333,13 @@ Route::get('/groups/list', function(){
 });
 
 
-###
+
+/*
+|
+| GET /groups/list/related
+| Get a list of all groups with devices related inside
+|
+*/
 Route::get('/groups/list/related', function(){
 
     # FIND THE USER_ID INTO TOKEN
@@ -286,7 +350,13 @@ Route::get('/groups/list/related', function(){
 });
 
 
-###
+
+/*
+|
+| GET /groups/list/full
+| Get a list of all groups with / without devices related
+|
+*/
 Route::get('/groups/list/full', function(){
 
     # FIND THE USER_ID INTO TOKEN
@@ -297,7 +367,30 @@ Route::get('/groups/list/full', function(){
 });
 
 
-###
+
+/*
+|
+| GET /group/list/related/{group}
+| Get all the info related to a group and its related devices
+|
+*/
+Route::get('/group/list/related/{group}', function( $group ){
+
+    # FIND THE USER_ID INTO TOKEN
+    $sub = App::call('App\Http\Controllers\JwtController@getSub');
+
+    return App\Group::RelatedTo( $sub, $group );
+
+})->where(['group' => '[a-z0-9]+']);
+
+
+
+/*
+|
+| GET /groups/messages/{group}/{number?}
+| Get N messages from the full conversation of the selected group
+|
+*/
 Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
     
     # FIND THE USER_ID INTO TOKEN
@@ -309,7 +402,12 @@ Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
 
 
 
-###
+/*
+|
+| POST /groups/{group}
+| Creates a new empty group in the system
+|
+*/
 Route::post('/groups/{group}', function( $group ){
     
     $sub = App::call('App\Http\Controllers\JwtController@getSub');
@@ -334,7 +432,12 @@ Route::post('/groups/{group}', function( $group ){
 
 
 
-###
+/*
+|
+| DELETE /groups/{group}
+| Deletes a group from the system
+|
+*/
 Route::delete('/groups/{group}', function( $group ){
     
     # FIND THE USER_ID INTO TOKEN

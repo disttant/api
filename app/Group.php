@@ -57,7 +57,7 @@ class Group extends Model
             return [ 'groups' => [] ];
 
         # Get all related device with the group
-        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description', 'relations.map_x', 'relations.map_y')
+        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description')
             ->join('groups', 'relations.group_id', '=', 'groups.id')
                 ->where('groups.user_id', $user_id)
             ->join('devices', 'relations.device_id', '=', 'devices.id')
@@ -77,8 +77,7 @@ class Group extends Model
             $preResult[$data->group][] = [ 
                 'name' => $data->name,
                 'type' => $data->type,
-                'description' => $data->description,
-                'map' => [$data->map_x, $data->map_y]
+                'description' => $data->description
             ];
         }
 
@@ -132,7 +131,60 @@ class Group extends Model
         }
 
         return $relatedGroups;
-        
+    }
+
+
+
+    /* *
+     *
+     *  List selected group with related devices inside
+     *
+     * */
+    public static function RelatedTo( string $user_id = null, string $group_name = null)
+    {
+        if ( is_null($user_id) || empty($user_id) )
+            return [ 'group' => [] ];
+
+        if ( is_null($group_name) || empty($group_name) )
+            return [ 'group' => [] ];
+
+        # Get all group-related devices
+        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description', 'relations.map_x', 'relations.map_y')
+            ->join('groups', 'relations.group_id', '=', 'groups.id')
+                ->where('groups.user_id', $user_id)
+                ->where('groups.group', $group_name)
+            ->join('devices', 'relations.device_id', '=', 'devices.id')
+                ->where('devices.user_id', $user_id)
+            ->where('relations.user_id', $user_id)
+            ->get();
+
+        if( count($relation) === 0 ){
+            return [ 'group' => [] ];
+        }
+
+        # Process the request a bit
+        $preResult = [];
+
+        ## Step 1: Re-group devices into right groups
+        foreach ($relation as $item => $data){
+            $preResult[$data->group][] = [ 
+                'name' => $data->name,
+                'type' => $data->type,
+                'description' => $data->description,
+                'map' => [$data->map_x, $data->map_y]
+            ];
+        }
+
+        ## Step 2: Change the structure a bit
+        $index = 0;
+        foreach ($preResult as $group => $devices){
+            $result['group'][$index]['name'] = $group;
+            $result['group'][$index]['devices'] = $devices;
+
+            $index++;
+        }
+
+        return $result;
     }
 
 
