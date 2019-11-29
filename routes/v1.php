@@ -283,8 +283,8 @@ Route::put('/devices/relation/coordinates/{device}', function( Request $request,
 
     # Check if there are coordinates into the JSON
     $validator = Validator::make($request->all(), [
-        'map_x' => 'required|numeric|max:255',
-        'map_y' => 'required|numeric|max:255',
+        'map_x' => 'required|integer|min:0|max:20',
+        'map_y' => 'required|integer|min:0|max:20',
     ]);
 
     if ($validator->fails()) 

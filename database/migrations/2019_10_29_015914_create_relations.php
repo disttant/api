@@ -25,8 +25,8 @@ class CreateRelations extends Migration
             $table->integer('user_id');
             $table->unsignedBigInteger('device_id');
             $table->unsignedBigInteger('group_id');
-            $table->unsignedTinyInteger('map_x')->nullable();
-            $table->unsignedTinyInteger('map_y')->nullable();
+            $table->unsignedTinyInteger('map_x')->nullable()->default(0);
+            $table->unsignedTinyInteger('map_y')->nullable()->default(0);
 
             //$table->unique(['sandbox', 'device_id', 'group_id']);
             //$table->primary('sandbox');
