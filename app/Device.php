@@ -154,18 +154,17 @@ class Device extends Model
         if ( is_null($device) || empty($device) )
             return [];
 
-        return Message::select('message', 'created_at')
-            ->orderByDesc(
-                Device::select('name')
-                    ->whereColumn('device_id', 'devices.id')
-                    ->where('name', $device)
-                    ->where('user_id', $user_id)
-                    ->orderBy('id', 'desc')
-                    ->limit(1)
-            )
-            ->where('user_id', $user_id)
+        return Message::select('messages.message', 'messages.created_at')
+
+            ->join('devices', 'devices.id', '=', 'messages.device_id')
+                ->where('devices.user_id', $user_id)
+                ->where('devices.name', $device)
+
+            ->where('messages.user_id', $user_id)
+            ->orderBy('messages.id', 'desc')
             ->limit($limit, 10)
             ->get();
+
     }
 
 
