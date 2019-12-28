@@ -10,7 +10,7 @@ return [
     | This value determines the internal URI path where the OAuth server is running
     |
     */
-    'oauth_server_internal_uri' => env('OAUTH_SERVER_INTERNAL_URI', 'http://192.168.0.4:8000'),
+    'oauth_server_internal_uri' => env('OAUTH_SERVER_INTERNAL_URI', 'http://192.168.0.5:8000'),
 
 
 
