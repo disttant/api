@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::any('/{any}', function () {
     
     response()->json([

@@ -14,10 +14,11 @@
 
 
 //
+/*
 Route::any('/{any}', function () {
     return 'Welcome!';
 })->where('any', '.*');;
-
+*/
 
 
 //

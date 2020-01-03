@@ -51,7 +51,7 @@ class JwtController extends Controller
 
     /* *
      *
-     * Returns a string with the sandbox
+     * Returns a string with the user
      * 
      * */
     public function getSub( Request $request )

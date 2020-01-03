@@ -27,6 +27,19 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
+
+        'api' => [
+            'throttle:1000,1',
+            'bindings',
+            'request.prechecker'
+        ],
+
+
+        'customfallback' => [
+            'bindings',
+        ],
+
+        /*
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -35,18 +48,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
-
-        'customfallback' => [
-            'throttle:10,1',
-            'bindings',
-        ],
-
-        'api' => [
-            'throttle:1000,1',
-            'bindings',
-            'prechecker'
-        ],
+        ],*/
 
     ];
 
@@ -68,7 +70,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'prechecker' => \App\Http\Middleware\RequestPrechecker::class,
+        'request.prechecker' => \App\Http\Middleware\RequestPrechecker::class,
+        'request.scopechecker' => \App\Http\Middleware\RequestScopeChecker::class,
     ];
 
     /**
@@ -86,5 +89,7 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
+        \App\Http\Middleware\RequestPrechecker::class,
+        \App\Http\Middleware\RequestScopeChecker::class,
     ];
 }

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+
+
+
     /**
      * This namespace is applied to your controller routes.
      *
@@ -16,6 +19,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected $namespace = 'App\Http\Controllers';
 
+
+
     /**
      * Define your route model bindings, pattern filters, etc.
      *
@@ -23,10 +28,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+
+        // Defining globally route parameters
+        Route::pattern('device', '[a-z0-9]+');
+        Route::pattern('group', '[a-z0-9]+');
+        Route::pattern('number', '[0-9]+');
 
         parent::boot();
     }
+
+
 
     /**
      * Define the routes for the application.
@@ -36,7 +47,6 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         
-
         $this->mapV1Routes();
 
         $this->mapV2Routes();
@@ -45,10 +55,7 @@ class RouteServiceProvider extends ServiceProvider
 
         //$this->mapWebRoutes();
 
-        //
     }
-
-    
 
     
 
@@ -67,6 +74,8 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/v1.php'));
     }
     
+
+
     /**
      * Define the "v2" routes for the application.
      *
@@ -82,6 +91,8 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/v2.php'));
     }
 
+
+
     /**
      * Define the "custom fallback" routes for the application.
      *
@@ -89,12 +100,14 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function mapCustomFallbackRoutes()
+     protected function mapCustomFallbackRoutes()
     {
         Route::middleware('customfallback')
             ->namespace($this->namespace)
             ->group(base_path('routes/customfallback.php'));
     }
+    
+
 
     /**
      * Define the "web" routes for the application.
@@ -103,11 +116,13 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
+    /*
     protected function mapWebRoutes()
     {
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
     }
+    */
     
 }

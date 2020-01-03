@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Validator;
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| Where API routes are defined. These routes are loaded by the RouteServiceProvider 
+| within the "api" middleware group.
+|
+| Some global tags like {device}, {group}, {number} are defined in 
+| RouteServiceProvider to short this file a bit
 |
 */
 
@@ -34,7 +36,7 @@ Route::get('/devices/list', function(){
 
     return App\Device::List($sub);
 
-});
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -51,7 +53,7 @@ Route::get('/devices/list/free', function(){
 
     return App\Device::Free($sub) ;
 
-});
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -81,7 +83,7 @@ Route::post('/devices/{device}', function( $device ){
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_w');
 
 
 
@@ -106,7 +108,7 @@ Route::delete('/devices/{device}', function( $device ){
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_d');
 
 
 
@@ -154,7 +156,7 @@ Route::put('/devices/profile/{device}', function( Request $request, $device){
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_w');
 
 
 
@@ -171,7 +173,7 @@ Route::get('/devices/messages/{device}/{number?}', function($device, $number = 3
 
     return App\Device::GetMessages( $sub, $device, $number );
 
-})->where(['device' => '[a-z0-9]+', 'number' => '[0-9]+']);
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -204,7 +206,7 @@ Route::post('/devices/message/{device}', function( Request $request, $device ){
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_w');
 
 
 
@@ -235,7 +237,7 @@ Route::post('/devices/relation/{device}/{group}', function( Request $request, $d
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+', 'group' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_w');
 
 
 
@@ -266,7 +268,7 @@ Route::delete('/devices/relation/{device}', function( Request $request, $device 
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_d');
 
 
 
@@ -313,7 +315,7 @@ Route::put('/devices/relation/coordinates/{device}', function( Request $request,
 
     return response( '', 204 )->send();
 
-})->where(['device' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_w');
 
 
 
@@ -330,7 +332,7 @@ Route::get('/groups/list', function(){
 
     return App\Group::List($sub);
 
-});
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -347,7 +349,7 @@ Route::get('/groups/list/related', function(){
 
     return App\Group::RelatedList($sub);
 
-});
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -364,7 +366,7 @@ Route::get('/groups/list/full', function(){
 
     return App\Group::FullList($sub);
 
-});
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -381,7 +383,7 @@ Route::get('/group/list/related/{group}', function( $group ){
 
     return App\Group::RelatedTo( $sub, $group );
 
-})->where(['group' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -398,7 +400,7 @@ Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
 
     return App\Group::GetMessages( $sub, $group, $number );
 
-})->where(['group' => '[a-z0-9]+', 'number' => '[0-9]+']);
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -428,7 +430,7 @@ Route::post('/groups/{group}', function( $group ){
 
     return response( '', 204 )->send();
 
-})->where(['group' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -453,5 +455,5 @@ Route::delete('/groups/{group}', function( $group ){
 
     return response( '', 204 )->send();
 
-})->where(['group' => '[a-z0-9]+']);
+})->middleware('request.scopechecker:adaptative_d');
 
