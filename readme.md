@@ -44,6 +44,8 @@ php artisan migrate
 find /final/location -type f -exec chmod 644 {} \;
 find /final/location -type d -exec chmod 755 {} \;
 ```
+10. Configure the web server (like Nginx) to route all the requests 
+to public/index.php
 
 #### 2. The easy way
 0. Install Docker
