@@ -1,12 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
-// Custom: Delete as soon as possible
-use App\Http\Controllers\JwtController;
-
-
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -138,14 +131,8 @@ Route::put('/devices/relation/coordinates/{device}', 'V1\RelationController@Chan
 | Get a list with all the groups in the system
 |
 */
-Route::get('/groups/list', function(){
-    
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    return App\Group::List($sub);
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::get('/groups/list', 'V1\GroupController@List')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -155,14 +142,8 @@ Route::get('/groups/list', function(){
 | Get a list of all groups with devices related inside
 |
 */
-Route::get('/groups/list/related', function(){
-
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    return App\Group::RelatedList($sub);
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::get('/groups/list/related', 'V1\GroupController@RelatedList')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -172,14 +153,8 @@ Route::get('/groups/list/related', function(){
 | Get a list of all groups with / without devices related
 |
 */
-Route::get('/groups/list/full', function(){
-
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    return App\Group::FullList($sub);
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::get('/groups/list/full', 'V1\GroupController@FullList')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -189,14 +164,8 @@ Route::get('/groups/list/full', function(){
 | Get all the info related to a group and its related devices
 |
 */
-Route::get('/group/list/related/{group}', function( $group ){
-
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    return App\Group::RelatedTo( $sub, $group );
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::get('/group/list/related/{group}', 'V1\GroupController@RelatedTo')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -206,14 +175,8 @@ Route::get('/group/list/related/{group}', function( $group ){
 | Get N messages from the full conversation of the selected group
 |
 */
-Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
-    
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    return App\Group::GetMessages( $sub, $group, $number );
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::get('/groups/messages/{group}/{number?}', 'V1\GroupController@GetMessages')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -223,27 +186,8 @@ Route::get('/groups/messages/{group}/{number?}', function($group, $number = 3){
 | Creates a new empty group in the system
 |
 */
-Route::post('/groups/{group}', function( $group ){
-    
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    $created = App\Group::Create($sub, $group);
-
-    if ( $created === false )
-        return response()->json([
-            'status'    => 'error',
-            'message'   => 'Bad request: malformed field'
-        ], 400 )->send();
-
-    if ( is_null( $created ) )
-        return response()->json([
-            'status'    => 'error',
-            'message'   => 'Bad request: resource already exists'
-        ], 409 )->send();
-
-    return response( '', 204 )->send();
-
-})->middleware('request.scopechecker:adaptative_r');
+Route::post('/groups/{group}', 'V1\GroupController@Create')
+    ->middleware('request.scopechecker:adaptative_r');
 
 
 
@@ -253,20 +197,6 @@ Route::post('/groups/{group}', function( $group ){
 | Deletes a group from the system
 |
 */
-Route::delete('/groups/{group}', function( $group ){
-    
-    # FIND THE USER_ID INTO TOKEN
-    $sub = App::call('App\Http\Controllers\JwtController@getSub');
-
-    $deleted = App\Group::Remove($sub, $group);
-
-    if ( $deleted === false )
-        return response()->json([
-            'status'    => 'error',
-            'message'   => 'Bad request: malformed field'
-        ], 400 )->send();
-
-    return response( '', 204 )->send();
-
-})->middleware('request.scopechecker:adaptative_d');
+Route::delete('/groups/{group}', 'V1\GroupController@Remove')
+    ->middleware('request.scopechecker:adaptative_d');
 

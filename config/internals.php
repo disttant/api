@@ -10,7 +10,7 @@ return [
     | This value determines the internal URI path where the OAuth server is running
     |
     */
-    'oauth_server_internal_uri' => env('OAUTH_SERVER_INTERNAL_URI', 'http://192.168.0.5:8000'),
+    'oauth_uri' => env('OAUTH_URI', 'http://accounts.server'),
 
 
 
@@ -23,7 +23,7 @@ return [
     | going to check the token before granting access to the resources
     |
     */
-    'check_token_uri' => env('CHECK_TOKEN_URI', '/internal/oauth/access_token/validate'),
+    'oauth_check_token_route' => env('OAUTH_CHECK_TOKEN_ROUTE', '/internal/oauth/access_token/validate'),
 
 
 ];

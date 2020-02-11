@@ -9,7 +9,6 @@ class Message extends Model
 
     public $timestamps = false;
 
-    
-    //
-    
+
+
 }

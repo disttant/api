@@ -18,7 +18,7 @@ class RequestPrechecker
     {
 
         $_guzzle = new \GuzzleHttp\Client([
-            'base_uri'    => config('internals.oauth_server_internal_uri'),
+            'base_uri'    => config('internals.oauth_uri'),
             'http_errors' => false
         ]);
 
@@ -64,7 +64,7 @@ class RequestPrechecker
             ], 400 )->send();
         }
 
-        $response = $_guzzle->get( config('internals.check_token_uri'), [
+        $response = $_guzzle->get( config('internals.oauth_check_token_route'), [
             'headers' => [ 
                 'Authorization' => 'Bearer ' . $request->bearerToken(),
                 'Accept'        => 'application/json'
