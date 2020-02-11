@@ -50,6 +50,9 @@ to public/index.php
 #### 2. The easy way
 0. Install Docker
 1. Clone the achetronic/laravel-service repository
+```
+git clone git@gitlab.com:achetronic/laravel-service.git
+```
 2. Place your .env into Dockerfile-config
 3. Execute: 
 ```
