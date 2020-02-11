@@ -27,7 +27,7 @@ class Relation extends Model
      *  Creates a new device relation into the given group
      *
      * */
-    public static function Create(string $user_id = null, string $device_name = null, string $group_name = null)
+    /*public static function Create(string $user_id = null, string $device_name = null, string $group_name = null)
     {
 
         if ( is_null($user_id) || empty($user_id) )
@@ -68,7 +68,7 @@ class Relation extends Model
             return false;
 
         return true;
-    }
+    }*/
 
 
 
@@ -77,7 +77,7 @@ class Relation extends Model
      *  Removes a device relation
      *
      * */
-    public static function Remove( string $user_id = null, string $device_name = null )
+    /*public static function Remove( string $user_id = null, string $device_name = null )
     {
 
         if ( is_null($user_id) || empty($user_id) )
@@ -105,7 +105,7 @@ class Relation extends Model
             return null;
 
         return true;
-    }
+    }*/
 
 
 
@@ -114,7 +114,7 @@ class Relation extends Model
      *  Set new value for device relation
      *
      * */
-    public static function Change( string $user_id = null, string $device_name = null, array $changes = [])
+    /*public static function Change( string $user_id = null, string $device_name = null, array $changes = [])
     {
 
         if ( is_null($user_id) || empty($user_id) )
@@ -145,6 +145,6 @@ class Relation extends Model
             return null;
 
         return true;
-    }
+    }*/
     
 }

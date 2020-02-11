@@ -25,7 +25,7 @@ class Device extends Model
      *  List all available devices of the given user
      *
      * */
-    public static function List(string $user_id = null)
+    /*public static function List(string $user_id = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
@@ -33,7 +33,7 @@ class Device extends Model
         return Device::select('name', 'type', 'description')
             ->where('user_id', $user_id)
             ->get();
-    }
+    }*/
 
 
 
@@ -42,7 +42,8 @@ class Device extends Model
      *  List all not related devices of the given user
      *
      * */
-    public static function Free(string $user_id = null)
+    
+    /* public static function Free(string $user_id = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return [];
@@ -55,7 +56,7 @@ class Device extends Model
                     ->where('user_id', $user_id)
             )
             ->get();
-    }
+    }*/
 
 
 
@@ -64,7 +65,7 @@ class Device extends Model
      *  Creates a new device for the given user
      *
      * */
-    public static function Create(string $user_id = null, string $name = null)
+    /*public static function Create(string $user_id = null, string $name = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return false;
@@ -85,7 +86,7 @@ class Device extends Model
 
         return true;
 
-    }
+    }*/
 
 
 
@@ -94,7 +95,7 @@ class Device extends Model
      *  Deletes a device from the given user
      *
      * */
-    public static function Remove(string $user_id = null, string $name = null)
+    /*public static function Remove(string $user_id = null, string $name = null)
     {
         if ( is_null($user_id) || empty($user_id) )
             return false;
@@ -107,7 +108,7 @@ class Device extends Model
 
         return true;
 
-    }
+    }*/
 
 
 
@@ -116,7 +117,7 @@ class Device extends Model
      *  Set new value for device
      *
      * */
-    public static function Change( string $user_id = null, string $device = null, array $changes = [])
+    /*public static function Change( string $user_id = null, string $device = null, array $changes = [])
     {
 
         if ( is_null($user_id) || empty($user_id) )
@@ -137,7 +138,7 @@ class Device extends Model
             return null;
 
         return true;
-    }
+    }*/
 
 
 
@@ -146,14 +147,8 @@ class Device extends Model
      * Retrieves N messages for a given user-device pair
      *
      * */
-    public static function GetMessages(string $user_id = null, string $device = null, $limit = 1)
+    /*public static function GetMessages( $user_id, $device, $limit = 1 )
     {
-        if ( is_null($user_id) || empty($user_id) )
-            return [];
-
-        if ( is_null($device) || empty($device) )
-            return [];
-
         return Message::select('messages.message', 'messages.created_at')
 
             ->join('devices', 'devices.id', '=', 'messages.device_id')
@@ -164,8 +159,7 @@ class Device extends Model
             ->orderBy('messages.id', 'desc')
             ->limit($limit, 10)
             ->get();
-
-    }
+    }*/
 
 
 
@@ -174,7 +168,7 @@ class Device extends Model
      *  Creates a new message for the given user-device pair
      *
      * */
-    public static function SetMessage(string $user_id = null, string $device = null, string $message = null)
+    /*public static function SetMessage(string $user_id, string $device, string $message)
     {
         if ( is_null($user_id) || empty($user_id) )
             return false;
@@ -184,6 +178,10 @@ class Device extends Model
 
         if ( is_null($message) || empty($message) )
             return false;
+
+        if( preg_match("/^(for|from){1}[\|]{1}[a-z0-9]{12}[\|]{1}[a-z]+([\|]{1}[a-z]+[\#]{1}[a-z0-9]+)+$/", $message) !== 1 ){
+            return false;
+        }
 
         # Get the device_id of a device name
         $device_id = Device::where('name', $device)
@@ -206,7 +204,7 @@ class Device extends Model
             return false;
 
         return true;
-    }
+    }*/
 
 
 

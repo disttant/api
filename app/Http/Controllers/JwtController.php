@@ -6,13 +6,17 @@ use Illuminate\Http\Request;
 
 class JwtController extends Controller
 {
+
+
+
     /* *
      *
      * Returns an array with the payload decoded
      * 
      * */
-    public function getPayload( Request $request )
+    public static function getPayload( Request $request )
     {
+
         # Check the existance of JWT in headers
         if( is_null($request->bearerToken()) ){
             return [];
@@ -31,16 +35,17 @@ class JwtController extends Controller
         return $payload;  
     }
 
+
+
     /* *
      *
      * Returns a string with the given param
      * 
      * */
-    public function getParam( Request $request, string $param = 'sub' )
+    public static function getParam( Request $request, string $param = 'sub' )
     {
-        # Instance the JWT Parser
-        $jwt = new JwtController;
-        $payload = $jwt->getPayload( $request );
+
+        $payload = self::getPayload( $request );
 
         # Returns the field
         if ( !array_key_exists($param, $payload) )
@@ -49,28 +54,29 @@ class JwtController extends Controller
         return $payload[$param];
     }
 
+
+
     /* *
      *
      * Returns a string with the user
      * 
      * */
-    public function getSub( Request $request )
+    public static function getSub( Request $request )
     {
-        # Instance the JWT Parser
-        $jwt = new JwtController;
-
-        return $jwt->getParam( $request, 'sub' );
+        return self::getParam( $request, 'sub' );
     }
+
+
 
     /* *
      *
      * Returns a string with the jti
      * 
      * */
-    public function getJti( Request $request )
+    public static function getJti( Request $request )
     {
         # Instance the JWT Parser
-        $jwt = new JwtController;
+        //$jwt = new JwtController;
 
         return $jwt->getParam( $request, 'jti' );
     }
