@@ -29,6 +29,7 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
 
         'api' => [
+            'cors',
             'throttle:1000,1',
             'bindings',
             'request.prechecker'
@@ -72,6 +73,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'request.prechecker' => \App\Http\Middleware\RequestPrechecker::class,
         'request.scopechecker' => \App\Http\Middleware\RequestScopeChecker::class,
+        'cors' => \App\Http\Middleware\Cors::class,
     ];
 
     /**
@@ -82,6 +84,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        \App\Http\Middleware\Cors::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\Authenticate::class,
