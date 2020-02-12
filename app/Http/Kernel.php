@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
 
 
         'customfallback' => [
+            'cors',
             'bindings',
         ],
 
