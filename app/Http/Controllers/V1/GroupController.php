@@ -253,7 +253,7 @@ class GroupController extends Controller
         $user_id = JwtController::getSub( $request );
 
         $deletedRows = Group::where('user_id', $user_id)
-            ->where('group', $name);
+            ->where('group', $group);
 
         if ( $deletedRows->delete() == false )
             return response()->json([
