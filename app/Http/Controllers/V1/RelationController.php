@@ -43,14 +43,11 @@ class RelationController extends Controller
                 'message'   => 'Bad request: device or group not found'
             ], 400 )->send();
 
-        $group_id  = $selectedGroup->id;
-        $device_id = $selectedDevice->id;
-
         # Create a new relation model
         $newRelation = Relation::firstOrNew([
             'user_id'    => $user_id,
-            'device_id'  => $device_id,
-            'group_id'   => $group_id
+            'device_id'  => $selectedDevice->id,
+            'group_id'   => $selectedGroup->id
         ]);
 
         if ( $newRelation->save() === false )
@@ -90,11 +87,9 @@ class RelationController extends Controller
                 'message'   => 'Bad request: malformed field or not found'
             ], 400 )->send();
 
-        $device_id = $selectedDevice->id;
-
         # Try to remove any relation for that device
         $deleteRelation = Relation::where('user_id', $user_id)
-            ->where('device_id', $device_id)
+            ->where('device_id', $selectedDevice->id)
             ->delete();
 
         if ( $deleteRelation == false )
@@ -140,11 +135,9 @@ class RelationController extends Controller
                 'message'   => 'Bad request: device not found'
             ], 400 )->send();
 
-        $device_id = $device->id;
-
         # Try to update any relation for that device
         $updateRelation = Relation::where('user_id', $user_id)
-            ->where('device_id', $device_id)
+            ->where('device_id', $selectedDevice->id)
             ->update([
                 'map_x' => $request->input('map_x'),
                 'map_y' => $request->input('map_y')

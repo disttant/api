@@ -65,18 +65,18 @@ class DeviceController extends Controller
     {
         $user_id = JwtController::getSub( $request );
 
-        $theDevice= Device::firstOrNew([
+        $selectedDevice = Device::firstOrNew([
             'user_id' => $user_id,
             'name'    => $device
         ]);
 
-        if ( $theDevice->exists === true )
+        if ( $selectedDevice->exists === true )
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: device already exists'
             ], 409 )->send();
 
-        if ( $theDevice->save() === false )
+        if ( $selectedDevice->save() === false )
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: malformed field'
@@ -96,9 +96,9 @@ class DeviceController extends Controller
     {
         $user_id = JwtController::getSub( $request );
 
-        $deleted = Device::where('user_id', $user_id)->where('name', $device);
+        $selectedDevice = Device::where('user_id', $user_id)->where('name', $device);
 
-        if ( $deleted->delete() === false )
+        if ( $selectedDevice->delete() === false )
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: malformed field'
@@ -141,7 +141,6 @@ class DeviceController extends Controller
      * */
     public function PostMessage ( Request $request, $device )
     {
-
         $user_id = JwtController::getSub( $request );
 
         # Check if there are a good message in the input
@@ -159,23 +158,21 @@ class DeviceController extends Controller
             ], 400 )->send();
 
         # Get the id of a device and check
-        $device_id = Device::where('name', $device)
+        $selectedDevice = Device::where('name', $device)
             ->where('user_id', $user_id)
             ->first();
 
-        if ( is_null( $device_id ) )
+        if ( is_null( $selectedDevice ) )
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: device not found'
             ], 400 )->send();
-        
-        $device_id = $device_id->id;
 
         # Create a new message
         $newMessage = new Message;
 
         $newMessage->user_id   = $user_id;
-        $newMessage->device_id = $device_id;
+        $newMessage->device_id = $selectedDevice->id;
         $newMessage->message   = $request->input('message');
 
         if ( $newMessage->save() === false )
@@ -196,7 +193,6 @@ class DeviceController extends Controller
      * */
     public function ChangeProfile( Request $request, $device ) 
     {
-
         $user_id = JwtController::getSub( $request );
 
         # Check input fields
@@ -221,7 +217,7 @@ class DeviceController extends Controller
             $newValues['description'] = $request->input('description');
 
         # Try to save coordinates and check errors
-        $updatedDevice = \App\Device::where('user_id', $user_id)
+        $updatedDevice = Device::where('user_id', $user_id)
             ->where('name', $device)
             ->update($newValues);
 
