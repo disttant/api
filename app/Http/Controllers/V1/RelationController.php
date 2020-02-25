@@ -50,16 +50,16 @@ class RelationController extends Controller
             'group_id'   => $selectedGroup->id
         ]);
 
-        if ( $newRelation->save() === false )
-        return response()->json([
-            'status'    => 'error',
-            'message'   => 'Bad request: malformed field or not found'
-        ], 400 )->send();
-    
         if ( $newRelation->exists === true )
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: relation already exists'
+            ], 400 )->send();
+
+        if ( $newRelation->save() === false )
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Bad request: malformed field or not found'
             ], 400 )->send();
 
         return response( '', 204 )->send();
