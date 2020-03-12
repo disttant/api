@@ -127,7 +127,7 @@ RUN echo "#!/bin/bash" >> /init.sh
 RUN echo "service php7.3-fpm start" >> /init.sh
 RUN echo "shopt -s dotglob" >> /init.sh
 RUN echo "mv /app/* /var/www/" >> /init.sh
-RUN echo "php /app/artisan config:cache" >> /init.sh
+RUN echo "php /var/www/artisan config:cache" >> /init.sh
 RUN echo "/bin/bash" >> /init.sh
 RUN chown root:root /init.sh
 RUN chmod +x /init.sh
