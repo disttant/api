@@ -1,4 +1,4 @@
-FROM achetronic/laravel-php:1.0
+FROM achetronic/laravel-php:latest
 
 
 
