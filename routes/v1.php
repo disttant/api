@@ -22,7 +22,7 @@
 |
 */
 Route::get('/devices/list', 'V1\DeviceController@List')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -33,7 +33,7 @@ Route::get('/devices/list', 'V1\DeviceController@List')
 |
 */
 Route::get('/devices/list/free', 'V1\DeviceController@ListFree')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -44,7 +44,7 @@ Route::get('/devices/list/free', 'V1\DeviceController@ListFree')
 |
 */
 Route::post('/devices/{device}', 'V1\DeviceController@Create')
-    ->middleware('request.scopechecker:adaptative_w');
+    ->middleware('request.scopechecker:api_w');
 
 
 
@@ -55,7 +55,7 @@ Route::post('/devices/{device}', 'V1\DeviceController@Create')
 |
 */
 Route::delete('/devices/{device}', 'V1\DeviceController@Remove')
-    ->middleware('request.scopechecker:adaptative_d');
+    ->middleware('request.scopechecker:api_d');
 
 
 
@@ -66,7 +66,7 @@ Route::delete('/devices/{device}', 'V1\DeviceController@Remove')
 |
 */
 Route::put('/devices/profile/{device}', 'V1\DeviceController@ChangeProfile')
-    ->middleware('request.scopechecker:adaptative_w');
+    ->middleware('request.scopechecker:api_w');
 
 
 
@@ -77,7 +77,7 @@ Route::put('/devices/profile/{device}', 'V1\DeviceController@ChangeProfile')
 |
 */
 Route::get('/devices/messages/{device}/{number?}', 'V1\DeviceController@GetMessages')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -88,7 +88,7 @@ Route::get('/devices/messages/{device}/{number?}', 'V1\DeviceController@GetMessa
 |
 */
 Route::post('/devices/message/{device}', 'V1\DeviceController@PostMessage')
-    ->middleware('request.scopechecker:adaptative_w');
+    ->middleware('request.scopechecker:api_w');
 
 
 
@@ -99,7 +99,7 @@ Route::post('/devices/message/{device}', 'V1\DeviceController@PostMessage')
 |
 */
 Route::post('/devices/relation/{device}/{group}', 'V1\RelationController@Create')
-    ->middleware('request.scopechecker:adaptative_w');
+    ->middleware('request.scopechecker:api_w');
 
 
 
@@ -110,7 +110,7 @@ Route::post('/devices/relation/{device}/{group}', 'V1\RelationController@Create'
 |
 */
 Route::delete('/devices/relation/{device}', 'V1\RelationController@Remove')
-    ->middleware('request.scopechecker:adaptative_d');
+    ->middleware('request.scopechecker:api_d');
 
 
 
@@ -121,7 +121,7 @@ Route::delete('/devices/relation/{device}', 'V1\RelationController@Remove')
 |
 */
 Route::put('/devices/relation/coordinates/{device}', 'V1\RelationController@Change')
-    ->middleware('request.scopechecker:adaptative_w');
+    ->middleware('request.scopechecker:api_w');
 
 
 
@@ -132,7 +132,7 @@ Route::put('/devices/relation/coordinates/{device}', 'V1\RelationController@Chan
 |
 */
 Route::get('/groups/list', 'V1\GroupController@List')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -143,7 +143,7 @@ Route::get('/groups/list', 'V1\GroupController@List')
 |
 */
 Route::get('/groups/list/related', 'V1\GroupController@RelatedList')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -154,7 +154,7 @@ Route::get('/groups/list/related', 'V1\GroupController@RelatedList')
 |
 */
 Route::get('/groups/list/full', 'V1\GroupController@FullList')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -165,7 +165,7 @@ Route::get('/groups/list/full', 'V1\GroupController@FullList')
 |
 */
 Route::get('/group/list/related/{group}', 'V1\GroupController@RelatedTo')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -176,7 +176,7 @@ Route::get('/group/list/related/{group}', 'V1\GroupController@RelatedTo')
 |
 */
 Route::get('/groups/messages/{group}/{number?}', 'V1\GroupController@GetMessages')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -187,7 +187,7 @@ Route::get('/groups/messages/{group}/{number?}', 'V1\GroupController@GetMessages
 |
 */
 Route::post('/groups/{group}', 'V1\GroupController@Create')
-    ->middleware('request.scopechecker:adaptative_r');
+    ->middleware('request.scopechecker:api_r');
 
 
 
@@ -198,5 +198,5 @@ Route::post('/groups/{group}', 'V1\GroupController@Create')
 |
 */
 Route::delete('/groups/{group}', 'V1\GroupController@Remove')
-    ->middleware('request.scopechecker:adaptative_d');
+    ->middleware('request.scopechecker:api_d');
 
