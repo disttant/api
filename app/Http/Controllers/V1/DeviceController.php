@@ -230,4 +230,31 @@ class DeviceController extends Controller
         return response( '', 204 )->send();
     }
 
+
+
+    /* *
+     *
+     *  Retrieve the profile of a device
+     *
+     * */
+    public function GetProfile( Request $request, $device )
+    {
+        $user_id = JwtController::getSub( $request );
+
+        # Get the id of a device and check
+        $profile = Device::select('name', 'type', 'description')
+            ->where('name', $device)
+            ->where('user_id', $user_id)
+            ->first();
+
+        if ( is_null( $profile ) )
+            return response()->json([
+                'status'    => 'error',
+                'message'   => 'Bad request: device not found'
+            ], 400 )->send();
+        
+        return $selectedDevice;
+
+    }
+
 }

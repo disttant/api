@@ -72,6 +72,17 @@ Route::put('/devices/profile/{device}', 'V1\DeviceController@ChangeProfile')
 
 /*
 |
+| GET /devices/profile/{device}
+| Get N messages from given device
+|
+*/
+Route::get('/devices/profile/{device}/', 'V1\DeviceController@GetProfile')
+    ->middleware('request.scopechecker:api_r');
+
+
+
+/*
+|
 | GET /devices/messages/{device}/{number?}
 | Get N messages from given device
 |
