@@ -111,7 +111,7 @@ class GroupController extends Controller
         $allGroups      = self::List( $request );
         $relatedGroups  = self::RelatedList( $request );
 
-        if( !array_key_exists('groups', $allGroups) || ( $allGroups['groups']->count() === 0 ) ){
+        if( !array_key_exists('groups', $allGroups) || ( count($allGroups['groups']) === 0 ) ){
             return [ 'groups' => [] ];
         }
 
@@ -124,7 +124,7 @@ class GroupController extends Controller
         }
 
         ## Step 2: Adding empty groups to the list
-        $index = $relatedGroups['groups']->count();
+        $index = count($relatedGroups['groups']);
         foreach( $allGroups['groups'] as $item )
         {
             $relatedGroups['groups'][$index]['name'] = $item;
