@@ -23,8 +23,6 @@ class Relation extends Model
         'user_id',
         'device_id',
         'group_id',
-        'map_x',
-        'map_y'
     ];
 
 

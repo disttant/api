@@ -111,7 +111,7 @@ class GroupController extends Controller
         $allGroups      = self::List( $request );
         $relatedGroups  = self::RelatedList( $request );
 
-        if( !array_key_exists('groups', $allGroups) || ( count($allGroups['groups']) === 0 ) ){
+        if( !array_key_exists('groups', $allGroups) || ( $allGroups['groups']->count() === 0 ) ){
             return [ 'groups' => [] ];
         }
 
@@ -124,7 +124,7 @@ class GroupController extends Controller
         }
 
         ## Step 2: Adding empty groups to the list
-        $index = count($relatedGroups['groups']);
+        $index = $relatedGroups['groups']->count();
         foreach( $allGroups['groups'] as $item )
         {
             $relatedGroups['groups'][$index]['name'] = $item;
@@ -147,7 +147,7 @@ class GroupController extends Controller
         $user_id = JwtController::getSub( $request );
 
         # Get all group-related devices
-        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description', 'relations.map_x', 'relations.map_y')
+        $relation = Relation::select('groups.group', 'devices.name', 'devices.type', 'devices.description')
             ->join('groups', 'relations.group_id', '=', 'groups.id')
                 ->where('groups.user_id', $user_id)
                 ->where('groups.group', $group)
@@ -156,7 +156,7 @@ class GroupController extends Controller
             ->where('relations.user_id', $user_id)
             ->get();
 
-        if( count($relation) === 0 ){
+        if( $relation->count() === 0 ){
             return [ 'group' => [] ];
         }
 
@@ -169,7 +169,6 @@ class GroupController extends Controller
                 'name' => $data->name,
                 'type' => $data->type,
                 'description' => $data->description,
-                'map' => [$data->map_x, $data->map_y]
             ];
         }
 

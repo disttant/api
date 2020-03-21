@@ -253,7 +253,7 @@ class DeviceController extends Controller
                 'message'   => 'Bad request: device not found'
             ], 400 )->send();
         
-        return $selectedDevice;
+        return $profile;
 
     }
 

@@ -123,18 +123,7 @@ Route::post('/devices/relation/{device}/{group}', 'V1\RelationController@Create'
 Route::delete('/devices/relation/{device}', 'V1\RelationController@Remove')
     ->middleware('request.scopechecker:api_d');
 
-
-
-/*
-|
-| PUT /devices/relation/coordinates/{device}
-| Update a relation and set the coordinates for it
-|
-*/
-Route::put('/devices/relation/coordinates/{device}', 'V1\RelationController@Change')
-    ->middleware('request.scopechecker:api_w');
-
-
+    
 
 /*
 |
