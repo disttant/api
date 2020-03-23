@@ -1,4 +1,4 @@
-﻿## About Adaptative API
+﻿## About API
 
 
 ## Framework info (Mar/2020)
