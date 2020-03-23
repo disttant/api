@@ -1,7 +1,11 @@
-## About Adaptative API
+﻿## About Adaptative API
+
+
+## Framework info (Mar/2020)
+* Laravel 6
+
 
 ## Dependencies
-
 * PHP >= 7.2.0
 * BCMath PHP Extension
 * Ctype PHP Extension
@@ -47,28 +51,30 @@ find /final/location -type d -exec chmod 755 {} \;
 10. Configure the web server (like Nginx) to route all the requests 
 to public/index.php
 
-#### 2. The easy way
+#### 2. The easy way (testing mode)
+```
 0. Install Docker
-1. Clone the achetronic/laravel-service repository
+1. Clone the repository
+2. Build the image with the Dockerfile included
+3. Upload the image to a repository
+4. Use the image with Compose or Kubernetes
+   * Set all the environment variables Laravel uses
+     + APP_VENDOR
+     + APP_NAME
+     + [...]
+   * Set OAuth routes as environment vars
+     + OAUTH_URI
+     + OAUTH_CHECK_TOKEN_ROUTE
+
+   * Mount /var/www in a volume
+   * Mount /var/www/storage into a volume
 ```
-git clone git@gitlab.com:achetronic/laravel-service.git
-```
-2. Place your .env into Dockerfile-config
-3. Execute: 
-```
-docker build --build-arg GIT_APPLICATION=https://your/project.git \
-             -t achetronic/adaptative-api .
-```
-4. Rise up your container
-```
-docker run --rm \
-           -p 80:80 \
-           --name adaptative-api \
-           -it \
-           --mount type=volume,src=storage,dst=/var/www/storage \
-           -d \
-           achetronic/adaptative-api
-```
+
+Now, your container is listening on port 9000 (PHP_FPM)
+
+
+You just must configure an NGINX container in the way 
+Laravel documentation explains to use the app
 
 
 ## Security Vulnerabilities
