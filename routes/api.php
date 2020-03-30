@@ -29,7 +29,7 @@ Route::prefix('internal')->group(function () {
     | Get all the nodes for a user_id
     |
     */
-    Route::get('/nodes/{userId}', 'V2\NodeController@ShowAll');
+    Route::get('/nodes/{userId}', 'NodeController@ShowAll');
 
 
 
@@ -39,7 +39,7 @@ Route::prefix('internal')->group(function () {
     | Create a node for a user_id
     |
     */
-    Route::post('/node', 'V2\NodeController@CreateOne');
+    Route::post('/node', 'NodeController@CreateOne');
 
 
 
@@ -49,7 +49,7 @@ Route::prefix('internal')->group(function () {
     | Update a node for a user_id
     |
     */
-    Route::put('/node', 'V2\NodeController@ChangeOne');
+    Route::put('/node', 'NodeController@ChangeOne');
 
 
 
@@ -59,7 +59,7 @@ Route::prefix('internal')->group(function () {
     | Delete a node for a user_id
     |
     */
-    Route::delete('/node/{nodeId}/{userId}', 'V2\NodeController@RemoveOne');
+    Route::delete('/node/{nodeId}/{userId}', 'NodeController@RemoveOne');
 
 });
 
@@ -77,7 +77,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Create new device
     |
     */
-    Route::post('/device', 'V2\DeviceController@CreateOne')
+    Route::post('/device', 'DeviceController@CreateOne')
         ->middleware('custom.scope:api_w');
 
 
@@ -88,7 +88,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Update a device and set new values for it
     |
     */
-    Route::put('/device', 'V2\DeviceController@ChangeOne')
+    Route::put('/device', 'DeviceController@ChangeOne')
         ->middleware('custom.scope:api_w');
 
 
@@ -99,7 +99,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Delete a device
     |
     */
-    Route::delete('/device/{device}', 'V2\DeviceController@RemoveOne')
+    Route::delete('/device/{device}', 'DeviceController@RemoveOne')
     ->middleware('custom.scope:api_d');
 
 
@@ -110,7 +110,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get information of a device
     |
     */
-    Route::get('/device/{device}', 'V2\DeviceController@ShowOne')
+    Route::get('/device/{device}', 'DeviceController@ShowOne')
     ->middleware('custom.scope:api_r');
 
 
@@ -121,7 +121,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get a list of devices in the system
     |
     */
-    Route::get('/devices/list/all', 'V2\DeviceController@ShowAll')
+    Route::get('/devices/list/all', 'DeviceController@ShowAll')
         ->middleware('custom.scope:api_r');
 
 
@@ -132,7 +132,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get a list of available devices in the system
     |
     */
-    Route::get('/devices/list/free', 'V2\DeviceController@ShowFree')
+    Route::get('/devices/list/free', 'DeviceController@ShowFree')
         ->middleware('custom.scope:api_r');
 
 
@@ -143,7 +143,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Post a new message in a device's conversation
     |
     */
-    Route::post('/device/message', 'V2\DeviceController@CreateMessage')
+    Route::post('/device/message', 'DeviceController@CreateMessage')
         ->middleware('custom.scope:api_w');
 
 
@@ -154,7 +154,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get N messages from given device
     |
     */
-    Route::get('/device/messages/{device}/{number?}', 'V2\DeviceController@ShowMessages')
+    Route::get('/device/messages/{device}/{number?}', 'DeviceController@ShowMessages')
         ->middleware('custom.scope:api_r');
 
 
@@ -165,7 +165,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Creates a new relation between selected device and selected group
     |
     */
-    Route::post('/relation', 'V2\RelationController@CreateOne')
+    Route::post('/relation', 'RelationController@CreateOne')
         ->middleware('custom.scope:api_w');
 
 
@@ -176,7 +176,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Destroy all relations between selected device and any group
     |
     */
-    Route::delete('/relation/{device}', 'V2\RelationController@RemoveOne')
+    Route::delete('/relation/{device}', 'RelationController@RemoveOne')
         ->middleware('custom.scope:api_d');
 
         
@@ -187,7 +187,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get a list with all the groups in the system
     |
     */
-    Route::get('/groups/list/names', 'V2\GroupController@ShowNames')
+    Route::get('/groups/list/names', 'GroupController@ShowNames')
         ->middleware('custom.scope:api_r');
 
 
@@ -198,7 +198,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get a list of all groups with / without devices related
     |
     */
-    Route::get('/groups/list/all', 'V2\GroupController@ShowAll')
+    Route::get('/groups/list/all', 'GroupController@ShowAll')
         ->middleware('custom.scope:api_r');
 
 
@@ -209,7 +209,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get all the info related to a group and its related devices
     |
     */
-    Route::get('/group/{group}', 'V2\GroupController@ShowOne')
+    Route::get('/group/{group}', 'GroupController@ShowOne')
         ->middleware('custom.scope:api_r');
 
 
@@ -220,7 +220,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Get N messages from the full conversation of the selected group
     |
     */
-    Route::get('/group/messages/{group}/{number?}', 'V2\GroupController@ShowMessages')
+    Route::get('/group/messages/{group}/{number?}', 'GroupController@ShowMessages')
         ->middleware('custom.scope:api_r');
 
 
@@ -231,7 +231,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Creates a new empty group in the system
     |
     */
-    Route::post('/group', 'V2\GroupController@CreateOne')
+    Route::post('/group', 'GroupController@CreateOne')
         ->middleware('custom.scope:api_r');
 
 
@@ -242,7 +242,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     | Deletes a group from the system
     |
     */
-    Route::delete('/groups/{group}', 'V2\GroupController@RemoveOne')
+    Route::delete('/groups/{group}', 'GroupController@RemoveOne')
         ->middleware('custom.scope:api_d');
 
 });
