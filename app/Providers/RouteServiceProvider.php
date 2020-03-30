@@ -30,8 +30,10 @@ class RouteServiceProvider extends ServiceProvider
     {
 
         // Defining globally route parameters
-        Route::pattern('device', '[a-z0-9]+');
-        Route::pattern('group', '[a-z0-9]+');
+        Route::pattern('node', '[0-9]+');
+        Route::pattern('userId', '[0-9]+');
+        Route::pattern('device', '[a-z0-9]{1,30}');
+        Route::pattern('group', '[a-z0-9]{1,30}');
         Route::pattern('number', '[0-9]+');
 
         parent::boot();
@@ -47,9 +49,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         
-        $this->mapV1Routes();
-
-        $this->mapV2Routes();
+        $this->mapApiRoutes();
 
         $this->mapCustomFallbackRoutes();
 
@@ -66,29 +66,11 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function mapV1Routes()
+    protected function mapApiRoutes()
     {
-        Route::prefix('v1')
-            ->middleware('api')
+        Route::middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/v1.php'));
-    }
-    
-
-
-    /**
-     * Define the "v2" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
-    protected function mapV2Routes()
-    {
-        Route::prefix('v2')
-            ->middleware('api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/v2.php'));
+            ->group(base_path('routes/api.php'));
     }
 
 

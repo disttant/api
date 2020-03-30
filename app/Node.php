@@ -4,12 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Device extends Model
+class Node extends Model
 {
-
-    #public    $timestamps = false;
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +14,8 @@ class Device extends Model
      */
     protected $fillable = [
         'name',
-        'type',
-        'description',
-        'node_id'
+        'owner',
+        'key',
     ];
 
 
