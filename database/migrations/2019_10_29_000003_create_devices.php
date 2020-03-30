@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRelations extends Migration
+class CreateDevices extends Migration
 {
     /**
      * Run the migrations.
@@ -15,29 +15,25 @@ class CreateRelations extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('relations', function (Blueprint $table) {
-            
+        Schema::create('devices', function (Blueprint $table) {
+
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->integer('user_id');
-            $table->unsignedBigInteger('device_id');
-            $table->unsignedBigInteger('group_id');
+            $table->string('name', 30);
+            $table->string('type', 50)->nullable();
+            $table->string('description', 50)->nullable();
+            $table->unsignedBigInteger('node_id');
+            $table->timestamps();
 
-            //$table->unique(['sandbox', 'device_id', 'group_id']);
-            //$table->primary('sandbox');
-            $table->index(['device_id', 'group_id']);
+            $table->unique(['name', 'node_id']);
+            $table->index(['name', 'node_id']);
 
-            $table->foreign('device_id')->references('id')->on('devices')
+            $table->foreign('node_id')->references('id')->on('nodes')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-
-            $table->foreign('group_id')->references('id')->on('groups')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            
         });
 
         Schema::enableForeignKeyConstraints();
@@ -50,6 +46,6 @@ class CreateRelations extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('relations');
+        Schema::dropIfExists('devices');
     }
 }

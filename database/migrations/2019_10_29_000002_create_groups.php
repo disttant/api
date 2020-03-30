@@ -13,6 +13,7 @@ class CreateGroups extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
 
         Schema::create('groups', function (Blueprint $table) {
             $table->engine = 'InnoDB';
@@ -20,12 +21,22 @@ class CreateGroups extends Migration
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->integer('user_id');
-            $table->string('group', 30);
+            $table->string('name', 30);
+            $table->string('key', 64)->nullable();
+            $table->unsignedBigInteger('node_id');
+            $table->timestamps();
 
-            $table->index(['user_id', 'group']);
+            $table->unique(['key']);
+            $table->unique(['name', 'node_id']);
+            $table->index(['name', 'node_id']);
+
+            $table->foreign('node_id')->references('id')->on('nodes')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

@@ -29,15 +29,15 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
 
         'api' => [
-            'cors',
+            'custom.cors',
+            'custom.headers',
             'throttle:1000,1',
             'bindings',
-            'request.prechecker'
         ],
 
 
         'customfallback' => [
-            'cors',
+            'custom.cors',
             'bindings',
         ],
 
@@ -72,9 +72,10 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'request.prechecker' => \App\Http\Middleware\RequestPrechecker::class,
-        'request.scopechecker' => \App\Http\Middleware\RequestScopeChecker::class,
-        'cors' => \App\Http\Middleware\Cors::class,
+        'custom.cors' => \App\Http\Middleware\CustomCors::class,
+        'custom.headers' => \App\Http\Middleware\CustomHeaders::class,
+        'custom.jwt' => \App\Http\Middleware\CustomJwt::class,
+        'custom.scope' => \App\Http\Middleware\CustomScope::class,
     ];
 
     /**

@@ -30,8 +30,10 @@ class RouteServiceProvider extends ServiceProvider
     {
 
         // Defining globally route parameters
-        Route::pattern('device', '[a-z0-9]+');
-        Route::pattern('group', '[a-z0-9]+');
+        Route::pattern('node', '[0-9]+');
+        Route::pattern('userId', '[0-9]+');
+        Route::pattern('device', '[a-z0-9]{1,30}');
+        Route::pattern('group', '[a-z0-9]{1,30}');
         Route::pattern('number', '[0-9]+');
 
         parent::boot();

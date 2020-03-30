@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMessages extends Migration
+class CreateRelations extends Migration
 {
     /**
      * Run the migrations.
@@ -15,21 +15,32 @@ class CreateMessages extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('relations', function (Blueprint $table) {
 
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
 
             $table->bigIncrements('id')->autoIncrement();
-            $table->integer('user_id');
             $table->unsignedBigInteger('device_id');
-            $table->string('message', 200);
-            $table->dateTime('created_at')->useCurrent();
+            $table->unsignedBigInteger('group_id');
+            $table->unsignedBigInteger('node_id');
+            $table->timestamps();
 
-            $table->index(['user_id', 'device_id']);
+            $table->unique(['device_id', 'group_id', 'node_id']);
+
+            //$table->primary('sandbox');
+            $table->index(['device_id', 'group_id', 'node_id']);
+
+            $table->foreign('node_id')->references('id')->on('nodes')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('device_id')->references('id')->on('devices')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('group_id')->references('id')->on('groups')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -45,6 +56,6 @@ class CreateMessages extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('relations');
     }
 }

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    
-    public    $timestamps = false;
+
+    #public    $timestamps = false;
 
 
 
@@ -17,13 +17,11 @@ class Group extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
-        'group'
+        'name',
+        'key',
+        'node_id'
     ];
 
 
 
 }
-
-
-

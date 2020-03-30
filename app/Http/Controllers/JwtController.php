@@ -12,7 +12,7 @@ class JwtController extends Controller
     /* *
      *
      * Returns an array with the payload decoded
-     * 
+     *
      * */
     public static function getPayload( Request $request )
     {
@@ -31,8 +31,8 @@ class JwtController extends Controller
 
         if ( !is_array($payload) )
             return [];
-        
-        return $payload;  
+
+        return $payload;
     }
 
 
@@ -40,7 +40,7 @@ class JwtController extends Controller
     /* *
      *
      * Returns a string with the given param
-     * 
+     *
      * */
     public static function getParam( Request $request, string $param = 'sub' )
     {
@@ -59,7 +59,7 @@ class JwtController extends Controller
     /* *
      *
      * Returns a string with the user
-     * 
+     *
      * */
     public static function getSub( Request $request )
     {
@@ -71,7 +71,7 @@ class JwtController extends Controller
     /* *
      *
      * Returns a string with the jti
-     * 
+     *
      * */
     public static function getJti( Request $request )
     {
@@ -80,4 +80,18 @@ class JwtController extends Controller
 
         return $jwt->getParam( $request, 'jti' );
     }
+
+
+
+    /* *
+     *
+     * Returns the keyring
+     *
+     * */
+    public static function getKeyring( Request $request )
+    {
+        return self::getParam( $request, 'keyring' );
+    }
+
+
 }
