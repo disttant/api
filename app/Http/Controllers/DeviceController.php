@@ -70,25 +70,19 @@ class DeviceController extends Controller
                 'message'   => 'Bad request: Input field malformed or exists'
             ], 400 )->send();
 
-        # Request has null fields?
-        if( !$request->has('type') ){
-            $type = null;
-        }else{
-            $type = $request->input('type');
-        }
-
-        if( !$request->has('description') ){
-            $description = null;
-        }else{
-            $description = $request->input('description');
-        }
-
-        # Save into DB
+        # Generate a new resource
         $newDevice = new Device;
         $newDevice->name = $request->input('name');
         $newDevice->node_id = $jwtKeyring['node_id'];
-        $newDevice->type = $type;
-        $newDevice->description = $description;
+
+        # Request has optional fields?
+        if( $request->has('type') ){
+            $newDevice->type = $request->input('type');
+        }
+
+        if( $request->has('description') ){
+            $newDevice->description = $request->input('description');
+        }
 
         # Check for errors saving data
         if ( $newDevice->save() === false )
@@ -152,33 +146,27 @@ class DeviceController extends Controller
                 'message'   => 'Bad request: Input field malformed or exists'
             ], 400 )->send();
 
-        # Request has null fields?
-        if( !$request->has('type') ){
-            $type = null;
-        }else{
-            $type = $request->input('type');
-        }
-
-        if( !$request->has('description') ){
-            $description = null;
-        }else{
-            $description = $request->input('description');
-        }
-
-        # Save data to the database
+        # Retrieve resource from the database
         $updateDevice = Device::where('name', $request->input('name'))
-            ->where('node_id', $jwtKeyring['node_id'])
-            ->update([
-                'type' => $type,
-                'description' => $description
-            ]);
+                            ->where('node_id', $jwtKeyring['node_id'])
+                            ->get();
 
-        # Check errors
-        if ( $updateDevice == false )
+        # Request has null fields?
+        if( $request->has('type') ){
+            $updateDevice->type = $request->input('type');
+        }
+
+        if( $request->has('description') ){
+            $updateDevice->description = $request->input('description');
+        }
+
+        # Try to save and check for errors
+        if ( $updateDevice->save() === false ){
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Bad request: Unable to update the resource'
             ], 400 )->send();
+        }
 
         return response()->json( [
             'device' => [

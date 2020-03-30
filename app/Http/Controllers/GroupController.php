@@ -66,18 +66,15 @@ class GroupController extends Controller
                 'message'   => 'Bad request: Input field malformed or exists'
             ], 400 )->send();
 
-        # Request has a null key or filled?
-        if( !$request->has('key') ){
-            $lockKey = null;
-        }else{
-            $lockKey = $request->input('key');
-        }
-
-        # Save into DB
+        # Generate new resource
         $newGroup = new Group;
         $newGroup->name = $request->input('name');
         $newGroup->node_id = $jwtKeyring['node_id'];
-        $newGroup->key = $lockKey;
+
+        # Request has a key?
+        if( $request->has('key') ){
+            $newGroup->key = $request->input('key');
+        }
 
         # Check for errors saving data
         if ( $newGroup->save() === false )
@@ -89,8 +86,8 @@ class GroupController extends Controller
         # Success, answer with the new resource
         return response()->json( [
             'group' => [
-                'name'     => $request->input('name'),
-                'key' => $lockKey
+                'name' => $request->input('name'),
+                'key'  => $lockKey
             ]
         ], 200 )->send();
     }
