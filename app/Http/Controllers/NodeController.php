@@ -172,7 +172,7 @@ class NodeController extends Controller
         # Retrieve node from the db
         $updateNode = Node::where('id', $request->input('id'))
             ->where('user_id', $request->input('user_id'))
-            ->get();
+            ->first();
 
         # Request has null fields?
         if( $request->has('name') ){
