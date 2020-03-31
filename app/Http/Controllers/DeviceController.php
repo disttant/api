@@ -149,7 +149,7 @@ class DeviceController extends Controller
         # Retrieve resource from the database
         $updateDevice = Device::where('name', $request->input('name'))
                             ->where('node_id', $jwtKeyring['node_id'])
-                            ->get();
+                            ->first();
 
         # Request has null fields?
         if( $request->has('type') ){
