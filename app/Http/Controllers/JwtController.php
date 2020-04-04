@@ -75,7 +75,7 @@ class JwtController extends Controller
         # Instance the JWT Parser
         //$jwt = new JwtController;
 
-        return $jwt->getParam( $request, 'jti' );
+        return self::getParam( $request, 'jti' );
     }
 
 
@@ -90,7 +90,7 @@ class JwtController extends Controller
         # Instance the JWT Parser
         //$jwt = new JwtController;
 
-        return $jwt->getParam( $request, 'data' );
+        return self::getParam( $request, 'data' );
     }
 
 
