@@ -14,7 +14,7 @@ class Node extends Model
      */
     protected $fillable = [
         'name',
-        'owner',
+        'user_id',
         'key',
     ];
 

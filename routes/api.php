@@ -78,7 +78,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::post('/device', 'DeviceController@CreateOne')
-        ->middleware('custom.scope:api_w');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -89,7 +89,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::put('/device', 'DeviceController@ChangeOne')
-        ->middleware('custom.scope:api_w');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -100,7 +100,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::delete('/device/{device}', 'DeviceController@RemoveOne')
-    ->middleware('custom.scope:api_d');
+    ->middleware('custom.scope:user_card');
 
 
 
@@ -111,7 +111,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/device/{device}', 'DeviceController@ShowOne')
-    ->middleware('custom.scope:api_r');
+    ->middleware('custom.scope:user_card');
 
 
 
@@ -122,7 +122,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/devices/list/all', 'DeviceController@ShowAll')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -133,7 +133,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/devices/list/free', 'DeviceController@ShowFree')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -144,7 +144,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::post('/device/message', 'DeviceController@CreateMessage')
-        ->middleware('custom.scope:api_w');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -155,7 +155,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/device/messages/{device}/{number?}', 'DeviceController@ShowMessages')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -166,7 +166,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::post('/relation', 'RelationController@CreateOne')
-        ->middleware('custom.scope:api_w');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -177,7 +177,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::delete('/relation/{device}', 'RelationController@RemoveOne')
-        ->middleware('custom.scope:api_d');
+        ->middleware('custom.scope:user_card');
 
         
 
@@ -188,7 +188,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/groups/list/names', 'GroupController@ShowNames')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -199,7 +199,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/groups/list/all', 'GroupController@ShowAll')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -210,7 +210,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/group/{group}', 'GroupController@ShowOne')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -221,7 +221,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::get('/group/messages/{group}/{number?}', 'GroupController@ShowMessages')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -232,7 +232,7 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::post('/group', 'GroupController@CreateOne')
-        ->middleware('custom.scope:api_r');
+        ->middleware('custom.scope:user_card');
 
 
 
@@ -243,6 +243,6 @@ Route::middleware(['custom.jwt'])->group(function () {
     |
     */
     Route::delete('/groups/{group}', 'GroupController@RemoveOne')
-        ->middleware('custom.scope:api_d');
+        ->middleware('custom.scope:user_card');
 
 });

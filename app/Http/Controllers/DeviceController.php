@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Node;
-use App\Group;
+// use App\Node;
+// use App\Group;
 use App\Device;
 use App\Relation;
 use App\Message;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\JwtController as JwtController;
 use App\Http\Controllers\NodeController as NodeController;
 use App\Http\Controllers\GroupController as GroupController;
 use App\Http\Controllers\DeviceController as DeviceController;
 
-
-
 class DeviceController extends Controller
 {
-
-
-
     /* *
      *
      *  Create new device
@@ -33,7 +26,7 @@ class DeviceController extends Controller
      * */
     public static function CreateOne( Request $request )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( ! NodeController::isMaster( $request ) ){
@@ -51,8 +44,8 @@ class DeviceController extends Controller
             'name' => [
                 'required',
                 'regex:/^[a-z0-9]{1,30}$/',
-                Rule::unique('devices')->where(function ($query) use ($jwtKeyring) {
-                    return $query->where('node_id', $jwtKeyring['node_id']);
+                Rule::unique('devices')->where(function ($query) use ($jwtCard) {
+                    return $query->where('node_id', $jwtCard['node_id']);
                 })
             ],
             'type' => [
@@ -71,9 +64,9 @@ class DeviceController extends Controller
             ], 400 )->send();
 
         # Generate a new resource
-        $newDevice = new Device;
-        $newDevice->name = $request->input('name');
-        $newDevice->node_id = $jwtKeyring['node_id'];
+        $newDevice          = new Device;
+        $newDevice->name    = $request->input('name');
+        $newDevice->node_id = $jwtCard['node_id'];
 
         # Request has optional fields?
         if( $request->has('type') ){
@@ -110,7 +103,7 @@ class DeviceController extends Controller
      * */
     public static function ChangeOne( Request $request ) 
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master?
         if( ! NodeController::isMaster( $request ) ){
@@ -127,8 +120,8 @@ class DeviceController extends Controller
             'name' => [
                 'required',
                 'regex:/^[a-z0-9]{1,30}$/',
-                Rule::exists('devices')->where(function ($query) use ($jwtKeyring) {
-                    return $query->where('node_id', $jwtKeyring['node_id']);
+                Rule::exists('devices')->where(function ($query) use ($jwtCard) {
+                    return $query->where('node_id', $jwtCard['node_id']);
                 })
             ],
             'type' => [
@@ -148,8 +141,8 @@ class DeviceController extends Controller
 
         # Retrieve resource from the database
         $updateDevice = Device::where('name', $request->input('name'))
-                            ->where('node_id', $jwtKeyring['node_id'])
-                            ->first();
+            ->where('node_id', $jwtCard['node_id'])
+            ->first();
 
         # Request has null fields?
         if( $request->has('type') ){
@@ -186,7 +179,7 @@ class DeviceController extends Controller
      * */
     public static function RemoveOne( Request $request, string $device )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( ! NodeController::isMaster( $request ) ){
@@ -197,7 +190,7 @@ class DeviceController extends Controller
         }
 
         $deleteDevice = Device::where('name', $device)
-            ->where('node_id', $jwtKeyring['node_id'])
+            ->where('node_id', $jwtCard['node_id'])
             ->delete();
 
         if ( $deleteDevice == false )
@@ -268,26 +261,26 @@ class DeviceController extends Controller
      * */
     public static function GetAll( Request $request, bool $showId = false )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( NodeController::isMaster( $request ) ){
 
             $devices =  Device::select('id', 'name', 'type', 'description')
-                ->where('node_id', $jwtKeyring['node_id'])
+                ->where('node_id', $jwtCard['node_id'])
                 ->get();
 
         }else{
 
             $devices =  Device::select('devices.id', 'devices.name', 'devices.type', 'devices.description')
-                ->where('devices.node_id', $jwtKeyring['node_id'])
+                ->where('devices.node_id', $jwtCard['node_id'])
 
-                ->joinWhere('groups', 'groups.key', '=', $jwtKeyring['key'] )
-                ->where('groups.node_id', $jwtKeyring['node_id'])
+                ->joinWhere('groups', 'groups.key', '=', $jwtCard['key'] )
+                ->where('groups.node_id', $jwtCard['node_id'])
 
                 ->join('relations', 'relations.group_id', '=', 'groups.id')
                 ->whereColumn('devices.id', 'relations.device_id')
-                ->where('relations.node_id', $jwtKeyring['node_id'])
+                ->where('relations.node_id', $jwtCard['node_id'])
 
                 ->get();
         }
@@ -295,7 +288,7 @@ class DeviceController extends Controller
         # Return empty structure
         if( $devices->isEmpty() ){
             return [
-                    'devices' => []
+                'devices' => []
             ];
         }
 
@@ -347,7 +340,7 @@ class DeviceController extends Controller
      * */
     public static function GetFree( Request $request )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( ! NodeController::isMaster( $request ) ){
@@ -357,13 +350,13 @@ class DeviceController extends Controller
         }
 
         $devices = Device::select('name', 'type', 'description')
-                    ->where('node_id', $jwtKeyring['node_id'])
-                    ->whereNotIn('id', 
-                        Relation::select('device_id')
-                            ->whereColumn('device_id', 'devices.id')
-                            ->where('node_id', $jwtKeyring['node_id'])
-                    )
-                    ->get();
+            ->where('node_id', $jwtCard['node_id'])
+            ->whereNotIn('id', 
+                Relation::select('device_id')
+                    ->whereColumn('device_id', 'devices.id')
+                    ->where('node_id', $jwtCard['node_id'])
+            )
+            ->get();
 
         # Return empty structure
         if( $devices->isEmpty() ){
@@ -409,7 +402,7 @@ class DeviceController extends Controller
      * */
     public static function CreateMessage ( Request $request )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Check if the body is right
         $validator = Validator::make($request->all(), [
@@ -435,9 +428,9 @@ class DeviceController extends Controller
         $device = self::GetOne( $request, $request->input('name'), true );
 
         # Create a new message
-        $newMessage = new Message;
+        $newMessage            = new Message;
         $newMessage->device_id = $device['device']['id'];
-        $newMessage->node_id   = $jwtKeyring['node_id'];
+        $newMessage->node_id   = $jwtCard['node_id'];
         $newMessage->message   = $request->input('message');
 
         # Check for errors
@@ -465,7 +458,7 @@ class DeviceController extends Controller
      * */
     public static function GetMessages ( Request $request, string $device, int $number = 1 )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Set a limit in messages number
         $limit = 10;
@@ -477,7 +470,7 @@ class DeviceController extends Controller
 
         # Get the messages from DB
         $messages = Message::select('messages.message', 'messages.created_at')
-            ->where('messages.node_id', $jwtKeyring['node_id'])
+            ->where('messages.node_id', $jwtCard['node_id'])
             ->where('messages.device_id', $selectDevice['device']['id'])
             ->orderBy('messages.id', 'desc')
             ->limit($number)
@@ -505,17 +498,5 @@ class DeviceController extends Controller
 
         return response()->json( $data , 200 )->send();
     }
-
-
-
-    
-
-
-
-    
-
-
-
-    
 
 }
