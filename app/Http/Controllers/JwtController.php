@@ -13,10 +13,9 @@ class JwtController extends Controller
      * */
     public static function getPayload( Request $request )
     {
-
         # Check the existance of JWT in headers
         if( is_null($request->bearerToken()) ){
-            return [];
+            return collect([]);
         }
 
         # Get the coded JSON data from the JWT
@@ -27,9 +26,9 @@ class JwtController extends Controller
         $payload = json_decode( $payload, true );
 
         if ( !is_array($payload) )
-            return [];
+            return collect([]);
 
-        return $payload;
+        return collect($payload)->recursive();
     }
 
 
@@ -41,12 +40,11 @@ class JwtController extends Controller
      * */
     public static function getParam( Request $request, string $param = 'sub' )
     {
-
         $payload = self::getPayload( $request );
 
         # Returns the field
-        if ( !array_key_exists($param, $payload) )
-            return [];
+        if ( !$payload->has($param) )
+            return collect([]);
 
         return $payload[$param];
     }
@@ -72,9 +70,6 @@ class JwtController extends Controller
      * */
     public static function getJti( Request $request )
     {
-        # Instance the JWT Parser
-        //$jwt = new JwtController;
-
         return self::getParam( $request, 'jti' );
     }
 
@@ -87,9 +82,6 @@ class JwtController extends Controller
      * */
     public static function getData( Request $request )
     {
-        # Instance the JWT Parser
-        //$jwt = new JwtController;
-
         return self::getParam( $request, 'data' );
     }
 
@@ -103,13 +95,13 @@ class JwtController extends Controller
     public static function getCard( Request $request )
     {
         # Get the data from JWT
-        $data = collect( self::getData( $request ) );
+        $data = self::getData( $request );
 
         # Declare returned array if some field is missing
-        $missing = [
+        $missing = collect([
             'node_id' => null,
             'key'     => null
-        ];
+        ]);
 
         # Check for possible card missing
         if( ! $data->has('card') ){
@@ -117,7 +109,7 @@ class JwtController extends Controller
         }
 
         # Check for some field missing
-        if( !$data['card']->has('node_id') || ! $data['card']->has('key')){
+        if( !$data['card']->has('node_id') || !$data['card']->has('key')){
             return $missing;
         }
 
