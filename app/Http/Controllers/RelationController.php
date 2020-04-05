@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Node;
-use App\Group;
-use App\Device;
+// use App\Node;
+// use App\Group;
+// use App\Device;
 use App\Relation;
-use App\Message;
-
-use App\Http\Controllers\Controller;
+// use App\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\JwtController as JwtController;
 use App\Http\Controllers\NodeController as NodeController;
 use App\Http\Controllers\GroupController as GroupController;
 use App\Http\Controllers\DeviceController as DeviceController;
 
-
-
 class RelationController extends Controller
 {
-
-
-
     /* *
      *
      *  Create a new relation between a device and a group
@@ -33,7 +26,7 @@ class RelationController extends Controller
      * */
     public static function CreateOne( Request $request )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master?
         if( ! NodeController::isMaster( $request ) ){
@@ -50,16 +43,16 @@ class RelationController extends Controller
             'group' => [
                 'required',
                 'regex:/^[a-z0-9]{1,30}$/',
-                Rule::exists('groups', 'name')->where(function ($query) use ($jwtKeyring) {
-                    return $query->where('node_id', $jwtKeyring['node_id']);
+                Rule::exists('groups', 'name')->where(function ($query) use ($jwtCard) {
+                    return $query->where('node_id', $jwtCard['node_id']);
                 }),
                 
             ],
             'device' => [
                 'required',
                 'regex:/^[a-z0-9]{1,30}$/',
-                Rule::exists('devices', 'name')->where(function ($query) use ($jwtKeyring) {
-                    return $query->where('node_id', $jwtKeyring['node_id']);
+                Rule::exists('devices', 'name')->where(function ($query) use ($jwtCard) {
+                    return $query->where('node_id', $jwtCard['node_id']);
                 }),
             ]
         ]);
@@ -87,7 +80,7 @@ class RelationController extends Controller
         $newRelation = Relation::firstOrNew([
             'device_id' => $selectDevice['device']['id'],
             'group_id'  => $selectGroup['group']['id'],
-            'node_id'   => $jwtKeyring['node_id']
+            'node_id'   => $jwtCard['node_id']
         ]);
 
         if ( $newRelation->exists() === true ){
@@ -120,7 +113,7 @@ class RelationController extends Controller
      * */
     public static function RemoveOne( Request $request, $device )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( ! NodeController::isMaster( $request ) ){
@@ -145,7 +138,7 @@ class RelationController extends Controller
 
         # Delete the relation
         $deleteRelation = Relation::where('device_id', $selectDevice['device']['id'])
-            ->where('node_id', $jwtKeyring['node_id'])
+            ->where('node_id', $jwtCard['node_id'])
             ->delete();
 
         # Check for errors
@@ -157,7 +150,5 @@ class RelationController extends Controller
 
         return response( '', 204 )->send();
     }
-
-
 
 }

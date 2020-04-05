@@ -3,24 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Node;
-use App\Group;
-use App\Device;
-use App\Relation;
-use App\Message;
-
-use App\Http\Controllers\Controller;
+// use App\Group;
+// use App\Device;
+// use App\Relation;
+// use App\Message;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\JwtController as JwtController;
-
-
 
 class NodeController extends Controller
 {
-
-
-
     /* *
      *
      *  Return true if a master is identified for a node
@@ -28,12 +21,11 @@ class NodeController extends Controller
      * */
     public static function isMaster( Request $request )
     {
-
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         $master =  Node::select('id')
-            ->where('id', $jwtKeyring['node_id'])
-            ->where('key', $jwtKeyring['key'])
+            ->where('id', $jwtCard['node_id'])
+            ->where('key', $jwtCard['key'])
             ->limit(1)
             ->get();
 
@@ -46,7 +38,6 @@ class NodeController extends Controller
 
 
 
-
     /* *
      *
      *  Return true if the owner of a node is identified from the JWT
@@ -54,13 +45,12 @@ class NodeController extends Controller
      * */
     public static function isOwner( Request $request )
     {
-
         $jwtUserId  = JwtController::getSub( $request );
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         $owner =  Node::select('id')
-            ->where('id', $jwtKeyring['node_id'])
-            ->where('key', $jwtKeyring['key'])
+            ->where('id', $jwtCard['node_id'])
+            ->where('key', $jwtCard['key'])
             ->where('user_id', $jwtUserId)
             ->limit(1)
             ->get();
@@ -172,7 +162,7 @@ class NodeController extends Controller
         # Retrieve node from the db
         $updateNode = Node::where('id', $request->input('id'))
             ->where('user_id', $request->input('user_id'))
-            ->get();
+            ->first();
 
         # Request has null fields?
         if( $request->has('name') ){
@@ -269,13 +259,5 @@ class NodeController extends Controller
 
         return response()->json( $data , 200 )->send();
     }
-
-
-
-
-
-
-
-
 
 }

@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Node;
+// use App\Node;
 use App\Group;
-use App\Device;
+// use App\Device;
 use App\Relation;
 use App\Message;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\JwtController as JwtController;
 use App\Http\Controllers\NodeController as NodeController;
 
-
 class GroupController extends Controller
 {
-
-
-
     /* *
      *
      *  Create a new group
@@ -41,15 +35,15 @@ class GroupController extends Controller
 
         }
 
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Check if the body is right
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
                 'regex:/^[a-z0-9]{1,30}$/',
-                Rule::unique('groups')->where(function ($query) use ($jwtKeyring) {
-                    return $query->where('node_id', $jwtKeyring['node_id']);
+                Rule::unique('groups')->where(function ($query) use ($jwtCard) {
+                    return $query->where('node_id', $jwtCard['node_id']);
                 })
             ],
             'key' => [
@@ -67,13 +61,15 @@ class GroupController extends Controller
             ], 400 )->send();
 
         # Generate new resource
-        $newGroup = new Group;
-        $newGroup->name = $request->input('name');
-        $newGroup->node_id = $jwtKeyring['node_id'];
+        $newGroup          = new Group;
+        $newGroup->name    = $request->input('name');
+        $newGroup->node_id = $jwtCard['node_id'];
 
         # Request has a key?
         if( $request->has('key') ){
             $newGroup->key = $request->input('key');
+        }else{
+            $newGroup->key = null;
         }
 
         # Check for errors saving data
@@ -87,7 +83,7 @@ class GroupController extends Controller
         return response()->json( [
             'group' => [
                 'name' => $request->input('name'),
-                'key'  => $lockKey
+                'key'  => $newGroup->key
             ]
         ], 200 )->send();
     }
@@ -101,7 +97,7 @@ class GroupController extends Controller
      * */
     public static function RemoveOne( Request $request, string $group )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # is it a master or user?
         if( ! NodeController::isMaster( $request ) ){
@@ -113,7 +109,7 @@ class GroupController extends Controller
         }
 
         $deleteGroup = Group::where('name', $group)
-            ->where('node_id', $jwtKeyring['node_id'])
+            ->where('node_id', $jwtCard['node_id'])
             ->delete();
 
         # Check deletion
@@ -190,15 +186,15 @@ class GroupController extends Controller
      * */
     public static function GetNames( Request $request, bool $showId = false)
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Prepare all the group names
         $groups = Group::select('id', 'name')
-                      ->where('node_id', $jwtKeyring['node_id']);
+            ->where('node_id', $jwtCard['node_id']);
 
         # Not the master? ask for key too
         if( !NodeController::isMaster( $request ) ){
-            $groups =  $groups->where('key', $jwtKeyring['key']);
+            $groups =  $groups->where('key', $jwtCard['key']);
         }
 
         # Get the results
@@ -257,7 +253,7 @@ class GroupController extends Controller
      * */
     public static function GetRelated( Request $request, bool $showId = false )
     {
-        $keyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Get all groups with relations
         $groups = Relation::select(
@@ -268,14 +264,14 @@ class GroupController extends Controller
                         'devices.description'
                     )
                     ->join('groups', 'relations.group_id', '=', 'groups.id')
-                    ->where('groups.node_id', $keyring['node_id'])
+                    ->where('groups.node_id', $jwtCard['node_id'])
                     ->join('devices', 'relations.device_id', '=', 'devices.id')
-                    ->where('devices.node_id', $keyring['node_id'])
-                    ->where('relations.node_id', $keyring['node_id']);
+                    ->where('devices.node_id', $jwtCard['node_id'])
+                    ->where('relations.node_id', $jwtCard['node_id']);
 
         # Not the master? ask for key
         if( ! NodeController::isMaster( $request ) ){
-            $groups = $groups->where('groups.key', $keyring['key']);
+            $groups = $groups->where('groups.key', $jwtCard['key']);
         }
 
         # Retrieve the results
@@ -400,7 +396,7 @@ class GroupController extends Controller
      * */
     public static function GetMessages( Request $request, string $group, int $number = 1 )
     {
-        $jwtKeyring = JwtController::getKeyring( $request );
+        $jwtCard = JwtController::getCard( $request );
 
         # Set a limit in messages number
         $limit = 10;
@@ -416,9 +412,9 @@ class GroupController extends Controller
                         ->join('relations', 'relations.group_id', '=', 'groups.id')
                         ->whereColumn('messages.device_id', 'relations.device_id')
 
-                        ->where('relations.node_id', $jwtKeyring['node_id'])
-                        ->where('groups.node_id', $jwtKeyring['node_id'])
-                        ->where('messages.node_id', $jwtKeyring['node_id'])
+                        ->where('relations.node_id', $jwtCard['node_id'])
+                        ->where('groups.node_id', $jwtCard['node_id'])
+                        ->where('messages.node_id', $jwtCard['node_id'])
 
                         ->orderBy('messages.id', 'desc')
                         ->limit($number, 10);
@@ -453,6 +449,5 @@ class GroupController extends Controller
 
         return response()->json( $data , 200 )->send();
     }
-
 
 }
