@@ -88,8 +88,8 @@ class DeviceController extends Controller
         return response()->json( [
             'device' => [
                 'name'        => $request->input('name'),
-                'type'        => $type,
-                'description' => $description
+                'type'        => $request->input('type'),
+                'description' => $request->input('description')
             ]
         ], 200 )->send();
     }
@@ -164,8 +164,8 @@ class DeviceController extends Controller
         return response()->json( [
             'device' => [
                 'name'        => $request->input('name'),
-                'type'        => $type,
-                'description' => $description
+                'type'        => $request->input('type'),
+                'description' => $request->input('description')
             ]
         ], 200 )->send();
     }
