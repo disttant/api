@@ -238,11 +238,11 @@ Route::middleware(['custom.jwt'])->group(function () {
 
     /*
     |
-    | DELETE /groups/{group}
+    | DELETE /group/{group}
     | Deletes a group from the system
     |
     */
-    Route::delete('/groups/{group}', 'GroupController@RemoveOne')
+    Route::delete('/group/{group}', 'GroupController@RemoveOne')
         ->middleware('custom.scope:user_card');
 
 });
